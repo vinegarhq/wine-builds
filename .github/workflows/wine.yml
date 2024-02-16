@@ -49,7 +49,7 @@ jobs:
       working-directory: ./wine-9.2
       run: |
         ./configure \
-          --prefix=../wine-prefix \
+          --prefix=$HOME/wine-prefix \
           --enable-win64 \
           --with-mingw=ccache x86_64-w64-mingw64-gcc \
           --disable-win16 \
@@ -80,4 +80,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: wine-build
-        path: wine-prefix
+        path: $HOME/wine-prefix
