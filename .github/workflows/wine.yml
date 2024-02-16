@@ -51,7 +51,7 @@ jobs:
         ./configure \
           --prefix=$HOME/wine-prefix \
           --enable-win64 \
-          --host=x86_64
+          --host=x86_64 \
           --build=x86_64 \
           --with-mingw=ccache x86_64-w64-mingw64-gcc \
           --disable-win16 \
@@ -75,8 +75,10 @@ jobs:
           --with-usb \
           --with-v4l2
     - name: 'Build Wine'
+      working-directory: ./wine-9.2
       run: make
     - name: 'Install Wine'
+      working-directory: ./wine-9.2
       run: make install LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
     - name: Archive the artifacts
       uses: actions/upload-artifact@v2
