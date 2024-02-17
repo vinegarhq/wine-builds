@@ -13,6 +13,7 @@ jobs:
       run: |
         sudo apt update -y
         sudo apt install \
+          git \
           build-essential \
           curl \
           mingw-w64 \
@@ -52,22 +53,19 @@ jobs:
 
     - name: 'Fetch Wine'
       run: |
-        mkdir -p ${{ env.wine_dest }} wine
-        curl -fL https://dl.winehq.org/wine/source/9.x/wine-9.2.tar.xz | \
-          tar --strip-components=1 -xJf - -C wine
+        mkdir -p ${{ env.wine_dest }}
+        git clone https://gitlab.winehq.org/wine/wine --depth 1 --branch wine-9.2
 
     - name: 'Apply Wine Staging patchset'
       run: |
-        mkdir -p wine-staging
-        curl -fL https://github.com/wine-staging/wine-staging/archive/refs/tags/v9.2.tar.gz | \
-          tar --strip-components=1 -xzf - -C wine-staging
+        git clone https://gitlab.winehq.org/wine/wine-staging.git --branch v9.2
         wine-staging/staging/patchinstall.py --destdir=wine --all
     - name: 'Apply local patches'
       working-directory: wine
       run: |
         for p in ../*.patch; do
           echo $p
-          patch -p1 < $p
+          git apply --verbose $p
         done
 
     - name: 'Configure Wine'
