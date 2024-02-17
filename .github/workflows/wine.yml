@@ -5,116 +5,119 @@ permissions:
   contents: read
 env:
   wine_dest: ${{ github.workspace }}/wine-build
+  wine_ver: 9.2
+  wine_archive: ${{ github.workspace }}/wine-vinegarhq-build-${{ env.wine_ver }}.tar.xz
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-#    - name: 'Install Wine dependencies'
-#      run: |
-#        sudo apt update -y
-#        sudo apt install \
-#          git \
-#          build-essential \
-#          curl \
-#          mingw-w64 \
-#          libasound2-dev \
-#          libpulse-dev \
-#          libdbus-1-dev \
-#          libfontconfig-dev \
-#          libfreetype-dev \
-#          libgl-dev \
-#          libunwind-dev \
-#          libx11-dev \
-#          libxcomposite-dev \
-#          libxcursor-dev \
-#          libxfixes-dev \
-#          libxi-dev \
-#          libxrandr-dev \
-#          libxrender-dev \
-#          libxext-dev \
-#          libgstreamer1.0-dev \
-#          libgstreamer-plugins-base1.0-dev \
-#          libosmesa6-dev \
-#          libudev-dev \
-#          libvulkan-dev \
-#          libkrb5-dev \
-#          libusb-1.0-0-dev \
-#          libv4l-dev \
-#          ccache
-#
-#    - name: 'Configure ccache'
-#      uses: hendrikmuhs/ccache-action@v1.2
-#    - name: 'Setup ccache'
-#      run: |
-#        echo "PATH=/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH" >> $GITHUB_ENV
-#
-#    - name: 'Checkout Repository'
-#      uses: actions/checkout@v3
-#
+    - name: 'Install Wine dependencies'
+      run: |
+        sudo apt update -y
+        sudo apt install \
+          git \
+          build-essential \
+          curl \
+          mingw-w64 \
+          libasound2-dev \
+          libpulse-dev \
+          libdbus-1-dev \
+          libfontconfig-dev \
+          libfreetype-dev \
+          libgl-dev \
+          libunwind-dev \
+          libx11-dev \
+          libxcomposite-dev \
+          libxcursor-dev \
+          libxfixes-dev \
+          libxi-dev \
+          libxrandr-dev \
+          libxrender-dev \
+          libxext-dev \
+          libgstreamer1.0-dev \
+          libgstreamer-plugins-base1.0-dev \
+          libosmesa6-dev \
+          libudev-dev \
+          libvulkan-dev \
+          libkrb5-dev \
+          libusb-1.0-0-dev \
+          libv4l-dev \
+          ccache
+
+    - name: 'Configure ccache'
+      uses: hendrikmuhs/ccache-action@v1.2
+    - name: 'Setup ccache'
+      run: |
+        echo "PATH=/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH" >> $GITHUB_ENV
+
+    - name: 'Checkout Repository'
+      uses: actions/checkout@v3
+
     - name: 'Fetch Wine'
       run: |
         mkdir -p ${{ env.wine_dest }}
-        git clone https://gitlab.winehq.org/wine/wine.git --depth 1 --branch wine-9.2
-        cp -r wine ${{ env.wine_dest }}
-#
-#    - name: 'Apply Wine Staging patchset'
-#      run: |
-#        git clone https://gitlab.winehq.org/wine/wine-staging.git --depth 1 --branch v9.2
-#        wine-staging/staging/patchinstall.py --destdir=wine --all
-#    - name: 'Apply local patches'
-#      working-directory: wine
-#      run: |
-#        for p in ../*.patch; do
-#          echo $p
-#          patch -p1 < $p
-#        done
-#
-#    - name: 'Configure Wine'
-#      working-directory: wine
-#      run: |
-#        ./configure \
-#          CC='ccache gcc' \
-#          x86_64_CC='ccache x86_64-w64-mingw32-gcc' \
-#          --prefix=${{ env.wine_dest }} \
-#          --enable-win64 \
-#          --host=x86_64 \
-#          --build=x86_64 \
-#          --with-mingw=ccache x86_64-w64-mingw64-gcc \
-#          --disable-win16 \
-#          --disable-tests \
-#          --with-alsa \
-#          --with-pulse \
-#          --with-dbus \
-#          --with-fontconfig \
-#          --with-freetype \
-#          --with-opengl \
-#          --without-wayland \
-#          --with-x \
-#          --with-xcomposite \
-#          --with-xfixes \
-#          --with-xinput2 \
-#          --with-xrandr \
-#          --with-xrender \
-#          --with-gstreamer \
-#          --with-vulkan \
-#          --with-krb5 \
-#          --with-usb \
-#          --with-v4l2
-#    - name: 'Build Wine'
-#      working-directory: wine
-#      run: make -j$(($(nproc) + 1))
-#    - name: 'Install Wine'
-#      working-directory: wine
-#      run: make install LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
-#    - name: 'Strip Wine'
-#      working-directory: ${{ env.wine_dest }}
-#      run: |
-#        x86_64-w64-mingw32-strip --strip-unneeded lib/wine/x86_64-windows/*.dll
+        git clone https://gitlab.winehq.org/wine/wine.git --depth 1 \
+          --branch wine-${{ env.wine_ver }}
+
+    - name: 'Apply Wine Staging patchset'
+      run: |
+        git clone https://gitlab.winehq.org/wine/wine-staging.git --depth 1 \
+          --branch v${{ env.wine_ver }}
+        wine-staging/staging/patchinstall.py --destdir=wine --all
+    - name: 'Apply local patches'
+      working-directory: wine
+      run: |
+        for p in ../*.patch; do
+          echo $p
+          patch -p1 < $p
+        done
+
+    - name: 'Configure Wine'
+      working-directory: wine
+      run: |
+        ./configure \
+          CC='ccache gcc' \
+          x86_64_CC='ccache x86_64-w64-mingw32-gcc' \
+          --prefix=${{ env.wine_dest }} \
+          --enable-win64 \
+          --host=x86_64 \
+          --build=x86_64 \
+          --with-mingw=ccache x86_64-w64-mingw64-gcc \
+          --disable-win16 \
+          --disable-tests \
+          --with-alsa \
+          --with-pulse \
+          --with-dbus \
+          --with-fontconfig \
+          --with-freetype \
+          --with-opengl \
+          --without-wayland \
+          --with-x \
+          --with-xcomposite \
+          --with-xfixes \
+          --with-xinput2 \
+          --with-xrandr \
+          --with-xrender \
+          --with-gstreamer \
+          --with-vulkan \
+          --with-krb5 \
+          --with-usb \
+          --with-v4l2
+    - name: 'Build Wine'
+      working-directory: wine
+      run: make -j$(($(nproc) + 1))
+    - name: 'Install Wine'
+      working-directory: wine
+      run: make install LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
+    - name: 'Strip Wine'
+      working-directory: ${{ env.wine_dest }}
+      run: |
+        x86_64-w64-mingw32-strip --strip-unneeded lib/wine/x86_64-windows/*.dll
     - name: Make artifacts
       run: |
-        XZ_OPT=-9 tar -Jcf wine-build.tar.xz wine-build
+        XZ_OPT=-9 tar -Jcf ${{ env.wine_archive }} ${{ env.wine_dest }}
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: wine-build
-        path: wine-build.tar.xz
+        name: wine-vinegarhq-build-${{ env.wine_ver }}
+        path: ${{ env.wine_archive }}
