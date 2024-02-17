@@ -13,8 +13,9 @@ jobs:
       run: |
         sudo apt update -y
         sudo apt install \
-          gcc-multilib \
-          gcc-mingw-w64 \
+          build-essential \
+          curl \
+          mingw-w64 \
           libasound2-dev \
           libpulse-dev \
           libdbus-1-dev \
@@ -48,6 +49,7 @@ jobs:
 
     - name: 'Checkout Repository'
       uses: actions/checkout@v3
+
     - name: 'Fetch Wine'
       run: |
         mkdir -p ${{ env.wine_dest }}
@@ -83,7 +85,7 @@ jobs:
           --with-v4l2
     - name: 'Build Wine'
       working-directory: wine-9.2
-      run: make
+      run: make -j$(($(nproc) + 1))
     - name: 'Install Wine'
       working-directory: wine-9.2
       run: make install LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
