@@ -52,12 +52,13 @@ jobs:
 
     - name: 'Fetch Wine'
       run: |
-        mkdir -p ${{ env.wine_dest }}
+        mkdir -p ${{ env.wine_dest }} wine
         curl -fL https://dl.winehq.org/wine/source/9.x/wine-9.2.tar.xz | \
           tar --strip-components=1 -xJf - -C wine
 
     - name: 'Apply Wine Staging patchset'
       run: |
+        mkdir -p wine-staging
         curl -fL https://github.com/wine-staging/wine-staging/archive/refs/tags/v9.2.tar.gz | \
           tar --strip-components=1 -xJf - -C wine-staging
         wine-staging/staging/patchinstall.py --destdir=wine --all
