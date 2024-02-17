@@ -60,7 +60,7 @@ jobs:
       run: |
         mkdir -p wine-staging
         curl -fL https://github.com/wine-staging/wine-staging/archive/refs/tags/v9.2.tar.gz | \
-          tar --strip-components=1 -xJf - -C wine-staging
+          tar --strip-components=1 -xzf - -C wine-staging
         wine-staging/staging/patchinstall.py --destdir=wine --all
     - name: 'Apply local patches'
       working-directory: wine
