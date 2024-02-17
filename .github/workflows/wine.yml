@@ -55,7 +55,7 @@ jobs:
       run: |
         mkdir -p ${{ env.wine_dest }}
         git clone https://gitlab.winehq.org/wine/wine.git --depth 1 --branch wine-9.2
-        cp -r wine-9.2 ${{ env.wine_dest }}
+        cp -r wine ${{ env.wine_dest }}
 #
 #    - name: 'Apply Wine Staging patchset'
 #      run: |
