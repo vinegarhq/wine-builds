@@ -4,9 +4,8 @@ on:
 permissions:
   contents: read
 env:
-  wine_dest: ${{ github.workspace }}/wine-build
-  wine_ver: 9.2
-  wine_archive: ${{ github.workspace }}/wine-vinegarhq-build-${{ wine_ver }}.tar.xz
+  WINE_PREFIX: ${{ github.workspace }}/wine-build
+  WINE_VERSION: 9.2
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -55,14 +54,14 @@ jobs:
 
     - name: 'Fetch Wine'
       run: |
-        mkdir -p ${{ env.wine_dest }}
+        mkdir -p ${{ env.WINE_PREFIX }}
         git clone https://gitlab.winehq.org/wine/wine.git --depth 1 \
-          --branch wine-${{ env.wine_ver }}
+          --branch wine-${{ env.WINE_VERSION }}
 
     - name: 'Apply Wine Staging patchset'
       run: |
         git clone https://gitlab.winehq.org/wine/wine-staging.git --depth 1 \
-          --branch v${{ env.wine_ver }}
+          --branch v${{ env.WINE_VERSION }}
         wine-staging/staging/patchinstall.py --destdir=wine --all
     - name: 'Apply local patches'
       working-directory: wine
@@ -78,7 +77,7 @@ jobs:
         ./configure \
           CC='ccache gcc' \
           x86_64_CC='ccache x86_64-w64-mingw32-gcc' \
-          --prefix=${{ env.wine_dest }} \
+          --prefix=${{ env.WINE_PREFIX }} \
           --enable-win64 \
           --host=x86_64 \
           --build=x86_64 \
@@ -109,15 +108,18 @@ jobs:
     - name: 'Install Wine'
       working-directory: wine
       run: make install LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
+
     - name: 'Strip Wine'
-      working-directory: ${{ env.wine_dest }}
+      working-directory: ${{ env.WINE_PREFIX }}
       run: |
         x86_64-w64-mingw32-strip --strip-unneeded lib/wine/x86_64-windows/*.dll
+
     - name: Make artifacts
       run: |
-        XZ_OPT=-9 tar -Jcf ${{ env.wine_archive }} ${{ env.wine_dest }}
+        echo "WINE_ARCHIVE=${{ github.workspace }}/wine-vinegarhq-build-${{ env.WINE_VERSION }}.tar.xz" >> $GITHUB_ENV
+        XZ_OPT=-9 tar -Jcf ${{ env.WINE_ARCHIVE }} ${{ env.WINE_PREFIX }}
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: wine-vinegarhq-build-${{ env.wine_ver }}
-        path: ${{ env.wine_archive }}
+        name: wine-vinegarhq-build-${{ env.WINE_VERSION }}
+        path: ${{ env.WINE_ARCHIVE }}
