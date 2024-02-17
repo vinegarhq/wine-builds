@@ -54,7 +54,6 @@ jobs:
 
     - name: 'Fetch Wine'
       run: |
-        mkdir -p ${{ env.WINE_PREFIX }}
         git clone https://gitlab.winehq.org/wine/wine.git --depth 1 \
           --branch wine-${{ env.WINE_VERSION }}
 
@@ -74,6 +73,7 @@ jobs:
     - name: 'Configure Wine'
       working-directory: wine
       run: |
+        mkdir -p ${{ env.WINE_PREFIX }}
         ./configure \
           CC='ccache gcc' \
           x86_64_CC='ccache x86_64-w64-mingw32-gcc' \
@@ -117,6 +117,7 @@ jobs:
 
     - name: Make artifacts
       run: |
+        cd $(dirname ${{ env.WINE_PREFIX }})
         XZ_OPT=-9 tar -Jcf ${{ env.WINE_ARCHIVE }} $(basename ${{ env.WINE_PREFIX }})
 
     - name: Upload artifacts
