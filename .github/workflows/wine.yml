@@ -6,7 +6,7 @@ permissions:
 env:
   wine_dest: ${{ github.workspace }}/wine-build
   wine_ver: 9.2
-  wine_archive: ${{ github.workspace }}/wine-vinegarhq-build-${{ env.wine_ver }}.tar.xz
+  wine_archive: ${{ github.workspace }}/wine-vinegarhq-build-${{ wine_ver }}.tar.xz
 jobs:
   build:
     runs-on: ubuntu-latest
