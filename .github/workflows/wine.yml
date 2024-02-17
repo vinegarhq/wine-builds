@@ -53,9 +53,24 @@ jobs:
     - name: 'Fetch Wine'
       run: |
         mkdir -p ${{ env.wine_dest }}
-        curl -fL https://dl.winehq.org/wine/source/9.x/wine-9.2.tar.xz | tar xJf -
+        curl -fL https://dl.winehq.org/wine/source/9.x/wine-9.2.tar.xz | \
+          tar --strip-components=1 -xJf - -C wine
+
+    - name: 'Apply Wine Staging patchset'
+      run: |
+        curl -fL https://github.com/wine-staging/wine-staging/archive/refs/tags/v9.2.tar.gz | \
+          tar --strip-components=1 -xJf - -C wine-staging
+        wine-staging/staging/patchinstall.py --destdir=wine --all
+    - name: 'Apply local patches'
+      working-directory: wine
+      run: |
+        for p in ../*.patch; do
+          echo $p
+          patch -p1 < $p
+        done
+
     - name: 'Configure Wine'
-      working-directory: wine-9.2
+      working-directory: wine
       run: |
         ./configure \
           --prefix=${{ env.wine_dest }} \
@@ -84,10 +99,10 @@ jobs:
           --with-usb \
           --with-v4l2
     - name: 'Build Wine'
-      working-directory: wine-9.2
+      working-directory: wine
       run: make -j$(($(nproc) + 1))
     - name: 'Install Wine'
-      working-directory: wine-9.2
+      working-directory: wine
       run: make install LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
     - name: Archive the artifacts
       uses: actions/upload-artifact@v4

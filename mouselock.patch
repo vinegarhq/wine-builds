@@ -1,0 +1,325 @@
+From c5dc39997d5fa5f30be9b2eacc165e32f69a51e9 Mon Sep 17 00:00:00 2001
+From: Giraffe1966 <35208168+Giraffe1966@users.noreply.github.com>
+Date: Sun, 10 Dec 2023 06:34:51 +0000
+Subject: [PATCH 1/4] Make roblox cursor lock properly.
+
+---
+ dlls/winewayland.drv/wayland_pointer.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/dlls/winewayland.drv/wayland_pointer.c b/dlls/winewayland.drv/wayland_pointer.c
+index fad75c8506c..13942f991f5 100644
+--- a/dlls/winewayland.drv/wayland_pointer.c
++++ b/dlls/winewayland.drv/wayland_pointer.c
+@@ -767,11 +767,12 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
+                                               BOOL covers_vscreen)
+ {
+     struct wayland_pointer *pointer = &process_wayland.pointer;
+-    BOOL needs_relative, needs_lock, needs_confine;
++    BOOL needs_relative, needs_lock, needs_confine, is_one_pixel;
+ 
++    is_one_pixel = confine_rect && (int)(confine_rect->right - confine_rect->left)==1 && (int)(confine_rect->bottom - confine_rect->top)==1;
+     needs_lock = wl_surface && (confine_rect || covers_vscreen) &&
+-                 !pointer->cursor.wl_surface;
+-    needs_confine = wl_surface && confine_rect && pointer->cursor.wl_surface;
++                 (!pointer->cursor.wl_surface || is_one_pixel);
++    needs_confine = wl_surface && confine_rect && pointer->cursor.wl_surface && !is_one_pixel;
+ 
+     if (!needs_confine && pointer->zwp_confined_pointer_v1)
+     {
+@@ -846,7 +847,7 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
+         }
+     }
+ 
+-    needs_relative = !pointer->cursor.wl_surface &&
++    needs_relative = (!pointer->cursor.wl_surface || is_one_pixel) &&
+                      pointer->constraint_hwnd &&
+                      pointer->constraint_hwnd == pointer->focused_hwnd;
+ 
+-- 
+2.42.0
+
+
+From 67d3c6e3fe7b80d25f0f1c6b01aa77d2bca57051 Mon Sep 17 00:00:00 2001
+From: Giraffe1966 <35208168+Giraffe1966@users.noreply.github.com>
+Date: Sun, 10 Dec 2023 10:27:18 +0000
+Subject: [PATCH 2/4] Make relative motion smoother at lower mouse movement
+ speeds.
+
+---
+ dlls/winewayland.drv/wayland_pointer.c | 12 ++++++++++--
+ dlls/winewayland.drv/waylanddrv.h      |  2 ++
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/dlls/winewayland.drv/wayland_pointer.c b/dlls/winewayland.drv/wayland_pointer.c
+index 13942f991f5..1ffe34c1852 100644
+--- a/dlls/winewayland.drv/wayland_pointer.c
++++ b/dlls/winewayland.drv/wayland_pointer.c
+@@ -258,6 +258,7 @@ static void relative_pointer_v1_relative_motion(void *data,
+     HWND hwnd;
+     POINT screen, origin;
+     struct wayland_surface *surface;
++    struct wayland_pointer *pointer = &process_wayland.pointer;
+     RECT window_rect;
+ 
+     if (!(hwnd = wayland_pointer_get_focused_hwnd())) return;
+@@ -265,11 +266,18 @@ static void relative_pointer_v1_relative_motion(void *data,
+ 
+     window_rect = surface->window.rect;
+ 
++    pthread_mutex_lock(&pointer->mutex);
+     wayland_surface_coords_to_window(surface,
+-                                     wl_fixed_to_double(dx),
+-                                     wl_fixed_to_double(dy),
++                                     wl_fixed_to_double(dx)+pointer->pendingX,
++                                     wl_fixed_to_double(dy)+pointer->pendingY,
+                                      (int *)&screen.x, (int *)&screen.y);
+ 
++    double actualDx = (double)screen.x / (double)(surface->window.scale);
++    pointer->pendingX = wl_fixed_to_double(dx)+pointer->pendingX-actualDx;
++    double actualDy = (double)screen.y / (double)(surface->window.scale);
++    pointer->pendingY = wl_fixed_to_double(dy)+pointer->pendingY-actualDy;
++
++    pthread_mutex_unlock(&pointer->mutex);
+     pthread_mutex_unlock(&surface->mutex);
+ 
+     /* We clip the relative motion within the window rectangle so that
+diff --git a/dlls/winewayland.drv/waylanddrv.h b/dlls/winewayland.drv/waylanddrv.h
+index 0883c43f1ff..793353017d4 100644
+--- a/dlls/winewayland.drv/waylanddrv.h
++++ b/dlls/winewayland.drv/waylanddrv.h
+@@ -99,6 +99,8 @@ struct wayland_pointer
+     HWND constraint_hwnd;
+     uint32_t enter_serial;
+     uint32_t button_serial;
++    double pendingX;
++    double pendingY;
+     struct wayland_cursor cursor;
+     pthread_mutex_t mutex;
+ };
+-- 
+2.42.0
+
+
+From 0dcabe4db4f780ba3e5bd997e3bfe88e2f7dd7bf Mon Sep 17 00:00:00 2001
+From: Giraffe1966 <35208168+Giraffe1966@users.noreply.github.com>
+Date: Mon, 11 Dec 2023 20:31:26 +0000
+Subject: [PATCH 3/4] Prevent left click from disabling cursor lock.
+
+---
+ dlls/win32u/input.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dlls/win32u/input.c b/dlls/win32u/input.c
+index 3ee46f0bfcf..09498c4e786 100644
+--- a/dlls/win32u/input.c
++++ b/dlls/win32u/input.c
+@@ -2518,7 +2518,7 @@ BOOL clip_fullscreen_window( HWND hwnd, BOOL reset )
+     if (!NtUserIsWindowRectFullScreen( &rect )) return FALSE;
+     if (is_captured_by_system()) return FALSE;
+     if (NtGetTickCount() - thread_info->clipping_reset < 1000) return FALSE;
+-    if (!reset && clipping_cursor && thread_info->clipping_cursor) return FALSE;  /* already clipping */
++    if (!reset && clipping_cursor) return FALSE;  /* already clipping */
+ 
+     if (!(monitor = NtUserMonitorFromWindow( hwnd, MONITOR_DEFAULTTONEAREST ))) return FALSE;
+     if (!NtUserGetMonitorInfo( monitor, &monitor_info )) return FALSE;
+-- 
+2.42.0
+
+
+From 3a858c6ed009ce0aa1c82a351d79d8732a35f877 Mon Sep 17 00:00:00 2001
+From: Giraffe1966 <35208168+Giraffe1966@users.noreply.github.com>
+Date: Sun, 17 Dec 2023 06:37:18 +0000
+Subject: [PATCH 4/4] Ensure the pointer is warped to the confinement region
+ when WAYLAND_ClipCursor is called.
+
+---
+ dlls/winewayland.drv/wayland_pointer.c | 132 +++++++++++++++++++------
+ dlls/winewayland.drv/waylanddrv.h      |   2 +
+ 2 files changed, 102 insertions(+), 32 deletions(-)
+
+diff --git a/dlls/winewayland.drv/wayland_pointer.c b/dlls/winewayland.drv/wayland_pointer.c
+index 1ffe34c1852..b634acb0e23 100644
+--- a/dlls/winewayland.drv/wayland_pointer.c
++++ b/dlls/winewayland.drv/wayland_pointer.c
+@@ -89,11 +89,84 @@ static void pointer_handle_motion_internal(wl_fixed_t sx, wl_fixed_t sy)
+     __wine_send_input(hwnd, &input, NULL);
+ }
+ 
++// Calling thread should hold pointer lock
++static void update_pointer_surface_coords(wl_fixed_t sx, wl_fixed_t sy)
++{
++    struct wayland_pointer *pointer = &process_wayland.pointer;
++
++    pointer->sx = wl_fixed_to_double(sx);
++    pointer->sy = wl_fixed_to_double(sy);
++}
++
++/*
++ Try to warp the pointer to the specified confines.
++ This is necessary since pointer warping won't necessarily happen
++ when making a call to zwp_pointer_constraints_v1_{confine_pointer/lock_pointer} with the region set.
++ In fact, most compositors won't warp the pointer when the region is set on a constraint.
++
++ This method of warping done by this function isn't guaranteed to warp the pointer either (the spec doesn't provide any guarentees that it will,
++ only that warping may occur), but this method seems to work in more compositors than setting the region of a constraint.
++
++ Calling thread should own the pointer mutex. This function warps the pointer
++ to the confinement's nearest edge.
++ There should also be no currently acive cursor constraint--if there is one, it should be destroyed and then recreated aftewards
++*/
++static void warp_to_confines(struct wl_surface *wl_surface, RECT *confine_rect)
++{
++    double sx, sy;
++    struct wayland_pointer *pointer = &process_wayland.pointer;
++
++    sx = pointer->sx;
++    sy = pointer->sy;
++
++    if (!confine_rect || (confine_rect->top<=sy && confine_rect->bottom >= sy && confine_rect->left <= sx && confine_rect->right >= sx))
++    {
++        // cursor is already in the confinement area
++        return;
++    }
++
++    if (confine_rect->top>sy)
++    {
++        sy = confine_rect->top;
++    }
++    if (confine_rect->bottom<sy)
++    {
++        sy = confine_rect->bottom;
++    }
++    if (confine_rect->left>sx)
++    {
++        sx = confine_rect->left;
++    }
++    if (confine_rect->right<sx)
++    {
++        sx = confine_rect->right;
++    }
++
++    struct zwp_locked_pointer_v1 *zwp_locked_pointer_v1 =
++        zwp_pointer_constraints_v1_lock_pointer(
++                    process_wayland.zwp_pointer_constraints_v1,
++                    wl_surface,
++                    pointer->wl_pointer,
++                    NULL,
++                    ZWP_POINTER_CONSTRAINTS_V1_LIFETIME_PERSISTENT);
++
++    zwp_locked_pointer_v1_set_cursor_position_hint(zwp_locked_pointer_v1, wl_fixed_from_double(sx), wl_fixed_from_double(sy));
++    wl_surface_commit(wl_surface);
++
++    zwp_locked_pointer_v1_destroy(zwp_locked_pointer_v1);
++
++    TRACE("Warping cursor to: (%f,%f)\n", sx, sy);
++}
++
+ static void pointer_handle_motion(void *data, struct wl_pointer *wl_pointer,
+                                   uint32_t time, wl_fixed_t sx, wl_fixed_t sy)
+ {
+     struct wayland_pointer *pointer = &process_wayland.pointer;
+ 
++    pthread_mutex_lock(&pointer->mutex);
++    update_pointer_surface_coords(sx, sy);
++    pthread_mutex_unlock(&pointer->mutex);
++
+     /* Ignore absolute motion events if in relative mode. */
+     if (pointer->zwp_relative_pointer_v1) return;
+ 
+@@ -119,6 +192,8 @@ static void pointer_handle_enter(void *data, struct wl_pointer *wl_pointer,
+     pthread_mutex_lock(&pointer->mutex);
+     pointer->focused_hwnd = hwnd;
+     pointer->enter_serial = serial;
++
++    update_pointer_surface_coords(sx, sy);
+     pthread_mutex_unlock(&pointer->mutex);
+ 
+     /* The cursor is undefined at every enter, so we set it again with
+@@ -808,24 +883,18 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
+                       confine_rect->right - confine_rect->left,
+                       confine_rect->bottom - confine_rect->top);
+ 
+-        if (!pointer->zwp_confined_pointer_v1 || pointer->constraint_hwnd != hwnd)
+-        {
+-            if (pointer->zwp_confined_pointer_v1)
+-                zwp_confined_pointer_v1_destroy(pointer->zwp_confined_pointer_v1);
+-            pointer->zwp_confined_pointer_v1 =
+-                zwp_pointer_constraints_v1_confine_pointer(
+-                    process_wayland.zwp_pointer_constraints_v1,
+-                    wl_surface,
+-                    pointer->wl_pointer,
+-                    region,
+-                    ZWP_POINTER_CONSTRAINTS_V1_LIFETIME_PERSISTENT);
+-            pointer->constraint_hwnd = hwnd;
+-        }
+-        else
+-        {
+-            zwp_confined_pointer_v1_set_region(pointer->zwp_confined_pointer_v1,
+-                                               region);
+-        }
++        if (pointer->zwp_confined_pointer_v1)
++            zwp_confined_pointer_v1_destroy(pointer->zwp_confined_pointer_v1);
++        if (confine_rect)
++            warp_to_confines(wl_surface, confine_rect);
++        pointer->zwp_confined_pointer_v1 =
++            zwp_pointer_constraints_v1_confine_pointer(
++                process_wayland.zwp_pointer_constraints_v1,
++                wl_surface,
++                pointer->wl_pointer,
++                region,
++                ZWP_POINTER_CONSTRAINTS_V1_LIFETIME_PERSISTENT);
++        pointer->constraint_hwnd = hwnd;
+ 
+         TRACE("Confining to hwnd=%p wayland=%d,%d+%d,%d\n",
+               pointer->constraint_hwnd,
+@@ -839,20 +908,19 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
+     {
+         HWND hwnd = wl_surface_get_user_data(wl_surface);
+ 
+-        if (!pointer->zwp_locked_pointer_v1 || pointer->constraint_hwnd != hwnd)
+-        {
+-            if (pointer->zwp_locked_pointer_v1)
+-                zwp_locked_pointer_v1_destroy(pointer->zwp_locked_pointer_v1);
+-            pointer->zwp_locked_pointer_v1 =
+-                zwp_pointer_constraints_v1_lock_pointer(
+-                    process_wayland.zwp_pointer_constraints_v1,
+-                    wl_surface,
+-                    pointer->wl_pointer,
+-                    NULL,
+-                    ZWP_POINTER_CONSTRAINTS_V1_LIFETIME_PERSISTENT);
+-            pointer->constraint_hwnd = hwnd;
+-            TRACE("Locking to hwnd=%p\n", pointer->constraint_hwnd);
+-        }
++        if (pointer->zwp_locked_pointer_v1)
++            zwp_locked_pointer_v1_destroy(pointer->zwp_locked_pointer_v1);
++        if (confine_rect)
++            warp_to_confines(wl_surface, confine_rect);
++        pointer->zwp_locked_pointer_v1 =
++            zwp_pointer_constraints_v1_lock_pointer(
++                process_wayland.zwp_pointer_constraints_v1,
++                wl_surface,
++                pointer->wl_pointer,
++                NULL,
++                ZWP_POINTER_CONSTRAINTS_V1_LIFETIME_PERSISTENT);
++        pointer->constraint_hwnd = hwnd;
++        TRACE("Locking to hwnd=%p\n", pointer->constraint_hwnd);
+     }
+ 
+     needs_relative = (!pointer->cursor.wl_surface || is_one_pixel) &&
+diff --git a/dlls/winewayland.drv/waylanddrv.h b/dlls/winewayland.drv/waylanddrv.h
+index 793353017d4..173b18afc24 100644
+--- a/dlls/winewayland.drv/waylanddrv.h
++++ b/dlls/winewayland.drv/waylanddrv.h
+@@ -101,6 +101,8 @@ struct wayland_pointer
+     uint32_t button_serial;
+     double pendingX;
+     double pendingY;
++    double sx;
++    double sy;
+     struct wayland_cursor cursor;
+     pthread_mutex_t mutex;
+ };
+-- 
+2.42.0
+
