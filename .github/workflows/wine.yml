@@ -54,7 +54,7 @@ jobs:
     - name: 'Fetch Wine'
       run: |
         mkdir -p ${{ env.wine_dest }}
-        git clone https://gitlab.winehq.org/wine/wine --depth 1 --branch wine-9.2
+        git clone https://gitlab.winehq.org/wine/wine.git --depth 1 --branch wine-9.2
 
     - name: 'Apply Wine Staging patchset'
       run: |
@@ -65,7 +65,7 @@ jobs:
       run: |
         for p in ../*.patch; do
           echo $p
-          git apply --verbose $p
+          git apply --verbose -3 $p
         done
 
     - name: 'Configure Wine'
