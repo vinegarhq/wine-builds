@@ -4,14 +4,17 @@ on:
 permissions:
   contents: read
 env:
-  WINE_PREFIX: ${{ github.workspace }}/wine-build
   WINE_VERSION: 9.2
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: 'Install Wine dependencies'
+    - name: 'Setup environment'
       run: |
+        echo "WINE_ARCHIVE=${{ github.workspace }}/wine-vinegarhq-build-${{ env.WINE_VERSION }}.tar.xz" >> $GITHUB_ENV
+        echo "WINE_PREFIX=${{ github.workspace }}/wine-vinegarhq-build-${{ env.WINE_VERSION }}" >> $GITHUB_ENV
+        echo "PATH=/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH" >> $GITHUB_ENV
+
         sudo apt update -y
         sudo apt install \
           git \
@@ -45,9 +48,6 @@ jobs:
 
     - name: 'Configure ccache'
       uses: hendrikmuhs/ccache-action@v1.2
-    - name: 'Setup ccache'
-      run: |
-        echo "PATH=/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH" >> $GITHUB_ENV
 
     - name: 'Checkout Repository'
       uses: actions/checkout@v3
@@ -74,7 +74,6 @@ jobs:
     - name: 'Configure Wine'
       working-directory: wine
       run: |
-        echo "WINE_ARCHIVE=${{ github.workspace }}/wine-vinegarhq-build-${{ env.WINE_VERSION }}.tar.xz" >> $GITHUB_ENV
         ./configure \
           CC='ccache gcc' \
           x86_64_CC='ccache x86_64-w64-mingw32-gcc' \
@@ -110,6 +109,7 @@ jobs:
     - name: 'Install Wine'
       working-directory: wine
       run: make install LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
+
     - name: 'Strip Wine'
       working-directory: ${{ env.WINE_PREFIX }}
       run: |
@@ -117,7 +117,8 @@ jobs:
 
     - name: Make artifacts
       run: |
-        XZ_OPT=-9 tar -Jcf ${{ env.WINE_ARCHIVE }} ${{ env.WINE_PREFIX }}
+        XZ_OPT=-9 tar -Jcf ${{ env.WINE_ARCHIVE }} $(basename ${{ env.WINE_PREFIX }})
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
