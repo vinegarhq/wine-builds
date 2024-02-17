@@ -39,6 +39,13 @@ jobs:
           libusb-1.0-0-dev \
           libv4l-dev \
           ccache
+
+    - name: 'Configure ccache'
+      uses: hendrikmuhs/ccache-action@v1.2
+    - name: 'Setup ccache'
+      run: |
+        echo "PATH=/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH" >> $GITHUB_ENV
+
     - name: 'Checkout Repository'
       uses: actions/checkout@v3
     - name: 'Fetch Wine'
