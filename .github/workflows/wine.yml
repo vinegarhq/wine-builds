@@ -7,79 +7,84 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: 'Install Wine dependencies'
-      run: |
-        sudo apt update -y
-        sudo apt install \
-          gcc-multilib \
-          gcc-mingw-w64 \
-          libasound2-dev \
-          libpulse-dev \
-          libdbus-1-dev \
-          libfontconfig-dev \
-          libfreetype-dev \
-          libgl-dev \
-          libunwind-dev \
-          libx11-dev \
-          libxcomposite-dev \
-          libxcursor-dev \
-          libxfixes-dev \
-          libxi-dev \
-          libxrandr-dev \
-          libxrender-dev \
-          libxext-dev \
-          libgstreamer1.0-dev \
-          libgstreamer-plugins-base1.0-dev \
-          libosmesa6-dev \
-          libudev-dev \
-          libvulkan-dev \
-          libkrb5-dev \
-          libusb-1.0-0-dev \
-          libv4l-dev \
-          ccache
-    - name: 'Checkout Repository'
-      uses: actions/checkout@v3
+#    - name: 'Install Wine dependencies'
+#      run: |
+#        sudo apt update -y
+#        sudo apt install \
+#          gcc-multilib \
+#          gcc-mingw-w64 \
+#          libasound2-dev \
+#          libpulse-dev \
+#          libdbus-1-dev \
+#          libfontconfig-dev \
+#          libfreetype-dev \
+#          libgl-dev \
+#          libunwind-dev \
+#          libx11-dev \
+#          libxcomposite-dev \
+#          libxcursor-dev \
+#          libxfixes-dev \
+#          libxi-dev \
+#          libxrandr-dev \
+#          libxrender-dev \
+#          libxext-dev \
+#          libgstreamer1.0-dev \
+#          libgstreamer-plugins-base1.0-dev \
+#          libosmesa6-dev \
+#          libudev-dev \
+#          libvulkan-dev \
+#          libkrb5-dev \
+#          libusb-1.0-0-dev \
+#          libv4l-dev \
+#          ccache
+#    - name: 'Checkout Repository'
+#      uses: actions/checkout@v3
     - name: 'Fetch Wine'
       run: |
         mkdir -p wine-build
-        curl -fL https://dl.winehq.org/wine/source/9.x/wine-9.2.tar.xz | tar xJf -
-    - name: 'Configure Wine'
-      working-directory: ./wine-9.2
+#        curl -fL https://dl.winehq.org/wine/source/9.x/wine-9.2.tar.xz | tar xJf -
+#    - name: 'Configure Wine'
+#      working-directory: ./wine-9.2
+#      run: |
+#        ./configure \
+#          --prefix=$HOME/wine-build \
+#          --enable-win64 \
+#          --host=x86_64 \
+#          --build=x86_64 \
+#          --with-mingw=ccache x86_64-w64-mingw64-gcc \
+#          --disable-win16 \
+#          --disable-tests \
+#          --with-alsa \
+#          --with-pulse \
+#          --with-dbus \
+#          --with-fontconfig \
+#          --with-freetype \
+#          --with-opengl \
+#          --without-wayland \
+#          --with-x \
+#          --with-xcomposite \
+#          --with-xfixes \
+#          --with-xinput2 \
+#          --with-xrandr \
+#          --with-xrender \
+#          --with-gstreamer \
+#          --with-vulkan \
+#          --with-krb5 \
+#          --with-usb \
+#          --with-v4l2
+#    - name: 'Build Wine'
+#      working-directory: ./wine-9.2
+#      run: make
+#    - name: 'Install Wine'
+#      working-directory: ./wine-9.2
+#      run: make install LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
+    - name: Testing
       run: |
-        ./configure \
-          --prefix=$HOME/wine-build \
-          --enable-win64 \
-          --host=x86_64 \
-          --build=x86_64 \
-          --with-mingw=ccache x86_64-w64-mingw64-gcc \
-          --disable-win16 \
-          --disable-tests \
-          --with-alsa \
-          --with-pulse \
-          --with-dbus \
-          --with-fontconfig \
-          --with-freetype \
-          --with-opengl \
-          --without-wayland \
-          --with-x \
-          --with-xcomposite \
-          --with-xfixes \
-          --with-xinput2 \
-          --with-xrandr \
-          --with-xrender \
-          --with-gstreamer \
-          --with-vulkan \
-          --with-krb5 \
-          --with-usb \
-          --with-v4l2
-    - name: 'Build Wine'
-      working-directory: ./wine-9.2
-      run: make
-    - name: 'Install Wine'
-      working-directory: ./wine-9.2
-      run: make install LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
+        mkdir wine-build/bin
+        touch wine-build/bin/wine64
+        chmod +x wine-build/bin/wine64
     - name: Archive the artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: wine-build
         path: wine-build
