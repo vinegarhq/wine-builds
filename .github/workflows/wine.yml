@@ -58,14 +58,14 @@ jobs:
 
     - name: 'Apply Wine Staging patchset'
       run: |
-        git clone https://gitlab.winehq.org/wine/wine-staging.git --branch v9.2
+        git clone https://gitlab.winehq.org/wine/wine-staging.git --depth 1 --branch v9.2
         wine-staging/staging/patchinstall.py --destdir=wine --all
     - name: 'Apply local patches'
       working-directory: wine
       run: |
         for p in ../*.patch; do
           echo $p
-          git apply --verbose -3 $p
+          patch -p1 < $p
         done
 
     - name: 'Configure Wine'
