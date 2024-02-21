@@ -45,6 +45,7 @@ jobs:
           libusb-1.0-0-dev \
           libv4l-dev \
           libxkbcommon-dev \
+          libxkbregistry-dev \
           libwayland-dev \
           ccache
 
