@@ -44,7 +44,8 @@ jobs:
           libkrb5-dev \
           libusb-1.0-0-dev \
           libv4l-dev \
-          wayland-dev \
+          libxkbcommon-dev \
+          libwayland-dev \
           ccache
 
     - name: 'Configure ccache'
