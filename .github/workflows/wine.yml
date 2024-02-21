@@ -44,6 +44,7 @@ jobs:
           libkrb5-dev \
           libusb-1.0-0-dev \
           libv4l-dev \
+          wayland-dev \
           ccache
 
     - name: 'Configure ccache'
@@ -77,6 +78,8 @@ jobs:
         ./configure \
           CC='ccache gcc' \
           x86_64_CC='ccache x86_64-w64-mingw32-gcc' \
+          CFLAGS='-O3 -pipe -march=x86-64-v2' \
+          CXXFLAGS='-O3 -pipe -march=x86-64-v2' \
           --prefix=${{ env.WINE_PREFIX }} \
           --enable-win64 \
           --host=x86_64 \
@@ -90,7 +93,7 @@ jobs:
           --with-fontconfig \
           --with-freetype \
           --with-opengl \
-          --without-wayland \
+          --with-wayland \
           --with-x \
           --with-xcomposite \
           --with-xfixes \
