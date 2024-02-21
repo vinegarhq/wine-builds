@@ -80,8 +80,9 @@ jobs:
         ./configure \
           CC='ccache gcc' \
           x86_64_CC='ccache x86_64-w64-mingw32-gcc' \
-          CFLAGS='-O3 -pipe -march=x86-64-v2' \
-          CXXFLAGS='-O3 -pipe -march=x86-64-v2' \
+          CFLAGS='-O3 -pipe -march=x86-64-v2 -mpclmul -mavx' \
+          CXXFLAGS='-O3 -pipe -march=x86-64-v2 -mpclmul -mavx' \
+          CROSSCFLAGS='-O3 -pipe -march=x86-64-v2 -mpclmul -mavx' \
           --prefix=${{ env.WINE_PREFIX }} \
           --enable-win64 \
           --host=x86_64 \
