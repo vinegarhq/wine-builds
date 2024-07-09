@@ -1,8 +1,10 @@
 name: Build Wine
 on:
   push:
+  pull_request:
 permissions:
   contents: read
+  pull-requests: read
 env:
   WINE_VERSION: 9.6
 jobs:
