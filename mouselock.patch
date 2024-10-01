@@ -1,4 +1,4 @@
-From c5dc39997d5fa5f30be9b2eacc165e32f69a51e9 Mon Sep 17 00:00:00 2001
+From 1843de52f50347728e5ed76d99b026cbaf2c108e Mon Sep 17 00:00:00 2001
 From: Giraffe1966 <35208168+Giraffe1966@users.noreply.github.com>
 Date: Sun, 10 Dec 2023 06:34:51 +0000
 Subject: [PATCH 1/4] Make roblox cursor lock properly.
@@ -8,15 +8,21 @@ Subject: [PATCH 1/4] Make roblox cursor lock properly.
  1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/dlls/winewayland.drv/wayland_pointer.c b/dlls/winewayland.drv/wayland_pointer.c
-index fad75c8506c..13942f991f5 100644
+index c20ba170285..fb13399d22c 100644
 --- a/dlls/winewayland.drv/wayland_pointer.c
 +++ b/dlls/winewayland.drv/wayland_pointer.c
-@@ -767,11 +767,12 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
+@@ -748,7 +748,7 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
                                                BOOL covers_vscreen)
  {
      struct wayland_pointer *pointer = &process_wayland.pointer;
 -    BOOL needs_relative, needs_lock, needs_confine;
-+    BOOL needs_relative, needs_lock, needs_confine, is_one_pixel;
++    BOOL needs_relative, needs_lock, needs_confine, is_one_pixel;;
+     static unsigned int once;
+ 
+     if (!process_wayland.zwp_pointer_constraints_v1)
+@@ -758,9 +758,10 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
+         return;
+     }
  
 +    is_one_pixel = confine_rect && (int)(confine_rect->right - confine_rect->left)==1 && (int)(confine_rect->bottom - confine_rect->top)==1;
      needs_lock = wl_surface && (confine_rect || covers_vscreen) &&
@@ -27,8 +33,8 @@ index fad75c8506c..13942f991f5 100644
  
      if (!needs_confine && pointer->zwp_confined_pointer_v1)
      {
-@@ -846,7 +847,7 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
-         }
+@@ -842,7 +843,7 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
+         return;
      }
  
 -    needs_relative = !pointer->cursor.wl_surface &&
@@ -37,58 +43,51 @@ index fad75c8506c..13942f991f5 100644
                       pointer->constraint_hwnd == pointer->focused_hwnd;
  
 -- 
-2.42.0
+2.46.2
 
 
-From 67d3c6e3fe7b80d25f0f1c6b01aa77d2bca57051 Mon Sep 17 00:00:00 2001
+From 32b0fccb746a675206639b6c990fed9a28829d10 Mon Sep 17 00:00:00 2001
 From: Giraffe1966 <35208168+Giraffe1966@users.noreply.github.com>
 Date: Sun, 10 Dec 2023 10:27:18 +0000
 Subject: [PATCH 2/4] Make relative motion smoother at lower mouse movement
  speeds.
 
 ---
- dlls/winewayland.drv/wayland_pointer.c | 12 ++++++++++--
- dlls/winewayland.drv/waylanddrv.h      |  2 ++
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ dlls/winewayland.drv/wayland_pointer.c | 6 +++---
+ dlls/winewayland.drv/waylanddrv.h      | 2 ++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/dlls/winewayland.drv/wayland_pointer.c b/dlls/winewayland.drv/wayland_pointer.c
-index 13942f991f5..1ffe34c1852 100644
+index fb13399d22c..aa67a7ba722 100644
 --- a/dlls/winewayland.drv/wayland_pointer.c
 +++ b/dlls/winewayland.drv/wayland_pointer.c
-@@ -258,6 +258,7 @@ static void relative_pointer_v1_relative_motion(void *data,
+@@ -261,18 +261,18 @@ static void relative_pointer_v1_relative_motion(void *private,
      HWND hwnd;
-     POINT screen, origin;
-     struct wayland_surface *surface;
+     POINT screen;
+     struct wayland_win_data *data;
 +    struct wayland_pointer *pointer = &process_wayland.pointer;
-     RECT window_rect;
  
      if (!(hwnd = wayland_pointer_get_focused_hwnd())) return;
-@@ -265,11 +266,18 @@ static void relative_pointer_v1_relative_motion(void *data,
+     if (!(data = wayland_win_data_get(hwnd))) return;
  
-     window_rect = surface->window.rect;
- 
-+    pthread_mutex_lock(&pointer->mutex);
-     wayland_surface_coords_to_window(surface,
+     wayland_surface_coords_to_window(data->wayland_surface,
 -                                     wl_fixed_to_double(dx),
 -                                     wl_fixed_to_double(dy),
 +                                     wl_fixed_to_double(dx)+pointer->pendingX,
 +                                     wl_fixed_to_double(dy)+pointer->pendingY,
                                       (int *)&screen.x, (int *)&screen.y);
  
-+    double actualDx = (double)screen.x / (double)(surface->window.scale);
-+    pointer->pendingX = wl_fixed_to_double(dx)+pointer->pendingX-actualDx;
-+    double actualDy = (double)screen.y / (double)(surface->window.scale);
-+    pointer->pendingY = wl_fixed_to_double(dy)+pointer->pendingY-actualDy;
-+
-+    pthread_mutex_unlock(&pointer->mutex);
-     pthread_mutex_unlock(&surface->mutex);
+     wayland_win_data_release(data);
  
-     /* We clip the relative motion within the window rectangle so that
+-
+     input.type = INPUT_MOUSE;
+     input.mi.dx = screen.x;
+     input.mi.dy = screen.y;
 diff --git a/dlls/winewayland.drv/waylanddrv.h b/dlls/winewayland.drv/waylanddrv.h
-index 0883c43f1ff..793353017d4 100644
+index 3dee8e432df..cd89f4959b1 100644
 --- a/dlls/winewayland.drv/waylanddrv.h
 +++ b/dlls/winewayland.drv/waylanddrv.h
-@@ -99,6 +99,8 @@ struct wayland_pointer
+@@ -100,6 +100,8 @@ struct wayland_pointer
      HWND constraint_hwnd;
      uint32_t enter_serial;
      uint32_t button_serial;
@@ -98,10 +97,10 @@ index 0883c43f1ff..793353017d4 100644
      pthread_mutex_t mutex;
  };
 -- 
-2.42.0
+2.46.2
 
 
-From 0dcabe4db4f780ba3e5bd997e3bfe88e2f7dd7bf Mon Sep 17 00:00:00 2001
+From 3074e20ea7df45f4a588697aa1728d3ac3c65e37 Mon Sep 17 00:00:00 2001
 From: Giraffe1966 <35208168+Giraffe1966@users.noreply.github.com>
 Date: Mon, 11 Dec 2023 20:31:26 +0000
 Subject: [PATCH 3/4] Prevent left click from disabling cursor lock.
@@ -111,23 +110,23 @@ Subject: [PATCH 3/4] Prevent left click from disabling cursor lock.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/dlls/win32u/input.c b/dlls/win32u/input.c
-index 3ee46f0bfcf..09498c4e786 100644
+index 14862e9a8a4..6f903a84acd 100644
 --- a/dlls/win32u/input.c
 +++ b/dlls/win32u/input.c
-@@ -2518,7 +2518,7 @@ BOOL clip_fullscreen_window( HWND hwnd, BOOL reset )
-     if (!NtUserIsWindowRectFullScreen( &rect )) return FALSE;
+@@ -2568,7 +2568,7 @@ BOOL clip_fullscreen_window( HWND hwnd, BOOL reset )
+     if (!is_window_rect_full_screen( &rect, dpi )) return FALSE;
      if (is_captured_by_system()) return FALSE;
      if (NtGetTickCount() - thread_info->clipping_reset < 1000) return FALSE;
 -    if (!reset && clipping_cursor && thread_info->clipping_cursor) return FALSE;  /* already clipping */
 +    if (!reset && clipping_cursor) return FALSE;  /* already clipping */
  
-     if (!(monitor = NtUserMonitorFromWindow( hwnd, MONITOR_DEFAULTTONEAREST ))) return FALSE;
-     if (!NtUserGetMonitorInfo( monitor, &monitor_info )) return FALSE;
+     ctx = set_thread_dpi_awareness_context( NTUSER_DPI_PER_MONITOR_AWARE );
+     monitor_info = monitor_info_from_window( hwnd, MONITOR_DEFAULTTONEAREST );
 -- 
-2.42.0
+2.46.2
 
 
-From 3a858c6ed009ce0aa1c82a351d79d8732a35f877 Mon Sep 17 00:00:00 2001
+From 8a5ef9a58f5c6a1c82746b6e78169c330b5a2937 Mon Sep 17 00:00:00 2001
 From: Giraffe1966 <35208168+Giraffe1966@users.noreply.github.com>
 Date: Sun, 17 Dec 2023 06:37:18 +0000
 Subject: [PATCH 4/4] Ensure the pointer is warped to the confinement region
@@ -139,11 +138,11 @@ Subject: [PATCH 4/4] Ensure the pointer is warped to the confinement region
  2 files changed, 102 insertions(+), 32 deletions(-)
 
 diff --git a/dlls/winewayland.drv/wayland_pointer.c b/dlls/winewayland.drv/wayland_pointer.c
-index 1ffe34c1852..b634acb0e23 100644
+index aa67a7ba722..26308df2a78 100644
 --- a/dlls/winewayland.drv/wayland_pointer.c
 +++ b/dlls/winewayland.drv/wayland_pointer.c
-@@ -89,11 +89,84 @@ static void pointer_handle_motion_internal(wl_fixed_t sx, wl_fixed_t sy)
-     __wine_send_input(hwnd, &input, NULL);
+@@ -92,11 +92,84 @@ static void pointer_handle_motion_internal(wl_fixed_t sx, wl_fixed_t sy)
+     NtUserSendHardwareInput(hwnd, 0, &input, 0);
  }
  
 +// Calling thread should hold pointer lock
@@ -227,7 +226,7 @@ index 1ffe34c1852..b634acb0e23 100644
      /* Ignore absolute motion events if in relative mode. */
      if (pointer->zwp_relative_pointer_v1) return;
  
-@@ -119,6 +192,8 @@ static void pointer_handle_enter(void *data, struct wl_pointer *wl_pointer,
+@@ -122,6 +195,8 @@ static void pointer_handle_enter(void *data, struct wl_pointer *wl_pointer,
      pthread_mutex_lock(&pointer->mutex);
      pointer->focused_hwnd = hwnd;
      pointer->enter_serial = serial;
@@ -236,7 +235,7 @@ index 1ffe34c1852..b634acb0e23 100644
      pthread_mutex_unlock(&pointer->mutex);
  
      /* The cursor is undefined at every enter, so we set it again with
-@@ -808,24 +883,18 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
+@@ -789,24 +864,18 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
                        confine_rect->right - confine_rect->left,
                        confine_rect->bottom - confine_rect->top);
  
@@ -273,7 +272,7 @@ index 1ffe34c1852..b634acb0e23 100644
  
          TRACE("Confining to hwnd=%p wayland=%d,%d+%d,%d\n",
                pointer->constraint_hwnd,
-@@ -839,20 +908,19 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
+@@ -820,20 +889,19 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
      {
          HWND hwnd = wl_surface_get_user_data(wl_surface);
  
@@ -306,12 +305,12 @@ index 1ffe34c1852..b634acb0e23 100644
 +        TRACE("Locking to hwnd=%p\n", pointer->constraint_hwnd);
      }
  
-     needs_relative = (!pointer->cursor.wl_surface || is_one_pixel) &&
+     if (!process_wayland.zwp_relative_pointer_manager_v1)
 diff --git a/dlls/winewayland.drv/waylanddrv.h b/dlls/winewayland.drv/waylanddrv.h
-index 793353017d4..173b18afc24 100644
+index cd89f4959b1..52b963968a7 100644
 --- a/dlls/winewayland.drv/waylanddrv.h
 +++ b/dlls/winewayland.drv/waylanddrv.h
-@@ -101,6 +101,8 @@ struct wayland_pointer
+@@ -102,6 +102,8 @@ struct wayland_pointer
      uint32_t button_serial;
      double pendingX;
      double pendingY;
@@ -321,5 +320,5 @@ index 793353017d4..173b18afc24 100644
      pthread_mutex_t mutex;
  };
 -- 
-2.42.0
+2.46.2
 
