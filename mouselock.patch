@@ -46,22 +46,22 @@ index c20ba170285..fb13399d22c 100644
 2.46.2
 
 
-From 32b0fccb746a675206639b6c990fed9a28829d10 Mon Sep 17 00:00:00 2001
+From e41ef995e33e90e36b58755bc1d2d422bbcfc4c1 Mon Sep 17 00:00:00 2001
 From: Giraffe1966 <35208168+Giraffe1966@users.noreply.github.com>
 Date: Sun, 10 Dec 2023 10:27:18 +0000
 Subject: [PATCH 2/4] Make relative motion smoother at lower mouse movement
  speeds.
 
 ---
- dlls/winewayland.drv/wayland_pointer.c | 6 +++---
- dlls/winewayland.drv/waylanddrv.h      | 2 ++
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ dlls/winewayland.drv/wayland_pointer.c | 13 ++++++++++---
+ dlls/winewayland.drv/waylanddrv.h      |  2 ++
+ 2 files changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/dlls/winewayland.drv/wayland_pointer.c b/dlls/winewayland.drv/wayland_pointer.c
-index fb13399d22c..aa67a7ba722 100644
+index fb13399d22c..c6cd4446a95 100644
 --- a/dlls/winewayland.drv/wayland_pointer.c
 +++ b/dlls/winewayland.drv/wayland_pointer.c
-@@ -261,18 +261,18 @@ static void relative_pointer_v1_relative_motion(void *private,
+@@ -261,17 +261,24 @@ static void relative_pointer_v1_relative_motion(void *private,
      HWND hwnd;
      POINT screen;
      struct wayland_win_data *data;
@@ -70,6 +70,7 @@ index fb13399d22c..aa67a7ba722 100644
      if (!(hwnd = wayland_pointer_get_focused_hwnd())) return;
      if (!(data = wayland_win_data_get(hwnd))) return;
  
++    pthread_mutex_lock(&pointer->mutex);
      wayland_surface_coords_to_window(data->wayland_surface,
 -                                     wl_fixed_to_double(dx),
 -                                     wl_fixed_to_double(dy),
@@ -77,12 +78,17 @@ index fb13399d22c..aa67a7ba722 100644
 +                                     wl_fixed_to_double(dy)+pointer->pendingY,
                                       (int *)&screen.x, (int *)&screen.y);
  
-     wayland_win_data_release(data);
+-    wayland_win_data_release(data);
++    double actualDx = (double)screen.x / (double)(surface->window.scale);
++    pointer->pendingX = wl_fixed_to_double(dx)+pointer->pendingX-actualDx;
++    double actualDy = (double)screen.y / (double)(surface->window.scale);
++    pointer->pendingY = wl_fixed_to_double(dy)+pointer->pendingY-actualDy;
  
--
++    pthread_mutex_unlock(&pointer->mutex);
++    wayland_win_data_release(data);
+ 
      input.type = INPUT_MOUSE;
      input.mi.dx = screen.x;
-     input.mi.dy = screen.y;
 diff --git a/dlls/winewayland.drv/waylanddrv.h b/dlls/winewayland.drv/waylanddrv.h
 index 3dee8e432df..cd89f4959b1 100644
 --- a/dlls/winewayland.drv/waylanddrv.h
@@ -100,7 +106,7 @@ index 3dee8e432df..cd89f4959b1 100644
 2.46.2
 
 
-From 3074e20ea7df45f4a588697aa1728d3ac3c65e37 Mon Sep 17 00:00:00 2001
+From d3707854f663684d025422624461f045cc2526eb Mon Sep 17 00:00:00 2001
 From: Giraffe1966 <35208168+Giraffe1966@users.noreply.github.com>
 Date: Mon, 11 Dec 2023 20:31:26 +0000
 Subject: [PATCH 3/4] Prevent left click from disabling cursor lock.
@@ -126,7 +132,7 @@ index 14862e9a8a4..6f903a84acd 100644
 2.46.2
 
 
-From 8a5ef9a58f5c6a1c82746b6e78169c330b5a2937 Mon Sep 17 00:00:00 2001
+From 46b1b0c2737e9f9784b2051a08d4b00fee73ed35 Mon Sep 17 00:00:00 2001
 From: Giraffe1966 <35208168+Giraffe1966@users.noreply.github.com>
 Date: Sun, 17 Dec 2023 06:37:18 +0000
 Subject: [PATCH 4/4] Ensure the pointer is warped to the confinement region
@@ -138,7 +144,7 @@ Subject: [PATCH 4/4] Ensure the pointer is warped to the confinement region
  2 files changed, 102 insertions(+), 32 deletions(-)
 
 diff --git a/dlls/winewayland.drv/wayland_pointer.c b/dlls/winewayland.drv/wayland_pointer.c
-index aa67a7ba722..26308df2a78 100644
+index c6cd4446a95..b41752ac02b 100644
 --- a/dlls/winewayland.drv/wayland_pointer.c
 +++ b/dlls/winewayland.drv/wayland_pointer.c
 @@ -92,11 +92,84 @@ static void pointer_handle_motion_internal(wl_fixed_t sx, wl_fixed_t sy)
@@ -235,7 +241,7 @@ index aa67a7ba722..26308df2a78 100644
      pthread_mutex_unlock(&pointer->mutex);
  
      /* The cursor is undefined at every enter, so we set it again with
-@@ -789,24 +864,18 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
+@@ -796,24 +871,18 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
                        confine_rect->right - confine_rect->left,
                        confine_rect->bottom - confine_rect->top);
  
@@ -272,7 +278,7 @@ index aa67a7ba722..26308df2a78 100644
  
          TRACE("Confining to hwnd=%p wayland=%d,%d+%d,%d\n",
                pointer->constraint_hwnd,
-@@ -820,20 +889,19 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
+@@ -827,20 +896,19 @@ static void wayland_pointer_update_constraint(struct wl_surface *wl_surface,
      {
          HWND hwnd = wl_surface_get_user_data(wl_surface);
  
