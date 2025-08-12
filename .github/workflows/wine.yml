@@ -115,34 +115,36 @@ jobs:
         sudo apt install \
           autoconf \
           build-essential \
-          mingw-w64 \
+          ccache \
           libasound2-dev \
-          libpulse-dev \
           libdbus-1-dev \
           libfontconfig-dev \
           libfreetype-dev \
           libgl-dev \
+          libgstreamer-plugins-base1.0-dev \
+          libgstreamer1.0-dev \
+          libkrb5-dev \
+          libosmesa6-dev \
+          libpulse-dev \
+          libsdl2-dev \
+          libudev-dev \
           libunwind-dev \
+          libusb-1.0-0-dev \
+          libv4l-dev \
+          libvulkan-dev \
+          libwayland-dev \
           libx11-dev \
           libxcomposite-dev \
           libxcursor-dev \
+          libxext-dev \
           libxfixes-dev \
           libxi-dev \
-          libxrandr-dev \
-          libxrender-dev \
-          libxext-dev \
-          libgstreamer1.0-dev \
-          libgstreamer-plugins-base1.0-dev \
-          libosmesa6-dev \
-          libudev-dev \
-          libvulkan-dev \
-          libkrb5-dev \
-          libusb-1.0-0-dev \
-          libv4l-dev \
+          libxinerama-dev \
           libxkbcommon-dev \
           libxkbregistry-dev \
-          libwayland-dev \
-          ccache
+          libxrandr-dev \
+          libxrender-dev \
+          mingw-w64
 
     - name: 'Configure ccache'
       uses: hendrikmuhs/ccache-action@v1.2
