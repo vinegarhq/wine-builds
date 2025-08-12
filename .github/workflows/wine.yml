@@ -77,7 +77,6 @@ jobs:
           -W winex11-WM_WINDOWPOSCHANGING \
           -W user32-alttab-focus \
           -W winex11-MWM_Decorations \
-          -W server-Signal_Thread \
           -W setupapi-DiskSpaceList
 
          cp eggroll/patches/proton/83-nv_low_latency_wine.patch \
