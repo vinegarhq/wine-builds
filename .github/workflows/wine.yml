@@ -15,7 +15,7 @@ jobs:
     steps:
     - name: 'Install dependencies'
       run: |
-        echo "NAME=proton-10.0-vinegarhq-${{ env.WINE_COMMIT }}" >> $GITHUB_ENV
+        echo "NAME=vinegarhq-wine-10.0-${{ env.WINE_COMMIT }}" >> $GITHUB_ENV
         
     - name: 'Checkout Repository'
       uses: actions/checkout@v3
@@ -98,7 +98,8 @@ jobs:
           eggroll/patches/proton/build_failure_prevention-add-nls.patch \
           eggroll/patches/proton/add-envvar-to-gate-media-converter.patch \
           eggroll/patches/proton/0001-ntdll-Downgrade-using-kernel-write-watches-from-MESS.patch \
-          eggroll/patches/proton/0001-win32u-add-env-switch-to-disable-wm-decorations.patch;
+          eggroll/patches/proton/0001-win32u-add-env-switch-to-disable-wm-decorations.patch \
+          *.patch
         do
           echo $p
           patch -d wine -sNp1 < $p
@@ -144,7 +145,8 @@ jobs:
           libxkbregistry-dev \
           libxrandr-dev \
           libxrender-dev \
-          mingw-w64
+          mingw-w64 \
+          strip
 
     - name: 'Configure ccache'
       uses: hendrikmuhs/ccache-action@v1.2
@@ -193,7 +195,7 @@ jobs:
       working-directory: wine
       run: make install LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
 
-    - name: 'Strip Wine'
+    - name: 'Strip Wine DLLs'
       working-directory: ${{ env.INSTALL }}
       run: |
         x86_64-w64-mingw32-strip --strip-unneeded lib/wine/x86_64-windows/*.dll
