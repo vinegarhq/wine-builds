@@ -105,8 +105,7 @@ jobs:
         done
 
         cd wine
-        autoreconf -f
-        ./tools/make_requests
+        ./autogen.sh
 
     - name: 'Install build dependencies'
       run: |
@@ -114,6 +113,7 @@ jobs:
 
         sudo apt update -y
         sudo apt install \
+          autoconf \
           build-essential \
           mingw-w64 \
           libasound2-dev \
