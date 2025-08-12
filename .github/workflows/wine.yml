@@ -9,15 +9,13 @@ env:
   WINE_COMMIT: "253fb023"
   STAGING_COMMIT: "05bc4b82"
   EGGROLL_COMMIT: "75a9f080"
-  NAME: "proton-10.0-vinegarhq-${{ env.WINE_COMMIT }}"
-  INSTALL: "${{ github.workspace }}/${{ env.NAME }}"
-  ARCHIVE: "${{ env.INSTALL }}.tar.xz"
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - name: 'Install dependencies'
       run: |
+        echo "NAME=proton-10.0-vinegarhq-${{ env.WINE_COMMIT }}" >> $GITHUB_ENV
         echo "PATH=/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH" >> $GITHUB_ENV
 
         sudo apt update -y
@@ -64,14 +62,16 @@ jobs:
       run: |
         mkdir -p wine wine-staging
         curl -fL https://github.com/ValveSoftware/wine/archive/${{ env.WINE_COMMIT }}.tar.gz |
-          tar xf - -C wine
+          tar xf - -C wine --strip-components=1
         curl -fL https://github.com/wine-staging/wine-staging/archive/${{ env.STAGING_COMMIT }}.tar.gz |
-          tar -xf - -C wine-staging
+          tar -xf - -C wine-staging --strip-components=1
         curl -fL https://github.com/GloriousEggroll/proton-ge-custom/archive/${{ env.EGGROLL_COMMIT }}.tar.gz |
-          tar -xf - -C eggroll
+          tar -xf - -C eggroll --strip-components=1
 
     - name: 'Apply patches'
       run: |
+        echo "INSTALL=${{ github.workspace }}/${{ env.NAME }}" >> $GITHUB_ENV
+
         wine-staging/staging/patchinstall.py --destdir=wine --all --no-autoconf \
           -W winex11-_NET_ACTIVE_WINDOW \
           -W winex11-WM_WINDOWPOSCHANGING \
@@ -155,10 +155,10 @@ jobs:
     - name: Make artifacts
       run: |
         cd $(dirname ${{ env.INSTALL }})
-        XZ_OPT=-9 tar -Jcf ${{ env.ARCHIVE }} $(basename ${{ env.INSTALL }})
+        XZ_OPT=-9 tar -Jcf ${{ env.NAME }}.tar.xz $(basename ${{ env.INSTALL }})
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.NAME }}
-        path: ${{ env.ARCHIVE }}
+        path: ${{ env.NAME }}.tar.xz
