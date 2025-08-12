@@ -60,7 +60,7 @@ jobs:
 
     - name: 'Fetch Wine'
       run: |
-        mkdir -p wine wine-staging
+        mkdir -p wine wine-staging eggroll
         curl -fL https://github.com/ValveSoftware/wine/archive/${{ env.WINE_COMMIT }}.tar.gz |
           tar -xzf - -C wine --strip-components=1
         curl -fL https://github.com/wine-staging/wine-staging/archive/${{ env.STAGING_COMMIT }}.tar.gz |
@@ -94,12 +94,13 @@ jobs:
             eggroll/patches/proton/0001-win32u-add-env-switch-to-disable-wm-decorations.patch \
             .
 
+        cd wine
+
         for p in ../*.patch; do
           echo $p
           patch -p1 < $p
         done
 
-        cd wine
         autoreconf -f
         ./tools/make_requests
 
