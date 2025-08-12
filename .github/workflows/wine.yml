@@ -41,6 +41,22 @@ jobs:
           -W winex11-WM_WINDOWPOSCHANGING \
           -W user32-alttab-focus \
           -W winex11-MWM_Decorations \
+          \
+          -W ntdll-Syscall_Emulation \
+          -W eventfd_synchronization \
+          -W server-PeekMessage \
+          -W server-Realtime_Priority \
+          -W msxml3-FreeThreadedXMLHTTP60 \
+          -W ntdll-ForceBottomUpAlloc \
+          -W ntdll-NtDevicePath \
+          -W ntdll_reg_flush \
+          -W user32-rawinput-mouse \
+          -W user32-recursive-activation \
+          -W d3dx11_43-D3DX11CreateTextureFromMemory \
+          -W d3dx9_36-D3DXStubs \
+          -W wined3d-zero-inf-shaders \
+          -W ntdll-RtlQueryPackageIdentity \
+          \
           -W setupapi-DiskSpaceList
 
          cp eggroll/patches/proton/83-nv_low_latency_wine.patch \
