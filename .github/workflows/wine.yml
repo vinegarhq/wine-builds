@@ -41,6 +41,14 @@ jobs:
           -W winex11-WM_WINDOWPOSCHANGING \
           -W user32-alttab-focus \
           -W winex11-MWM_Decorations \
+          -W server-Signal_Thread \
+          -W ntdll-Junction_Points \
+          -W server-Stored_ACLs \
+          -W server-File_Permissions \
+          -W kernel32-CopyFileEx \
+          -W shell32-Progress_Dialog \
+          -W shell32-ACE_Viewer \
+          -W dbghelp-Debug_Symbols \
           \
           -W ntdll-Syscall_Emulation \
           -W eventfd_synchronization \
@@ -57,20 +65,43 @@ jobs:
           -W wined3d-zero-inf-shaders \
           -W ntdll-RtlQueryPackageIdentity \
           \
+          -W loader-KeyboardLayouts \
+          -W ntdll-Hide_Wine_Exports \
+          -W kernel32-Debugger \
+          -W ntdll-ext4-case-folder \
+          -W user32-FlashWindowEx \
+          -W winex11-Fixed-scancodes \
+          -W winex11-Window_Style \
+          -W winex11-ime-check-thread-data \
+          -W winex11.drv-Query_server_position \
+          -W wininet-Cleanup \
+          \
+          -W cryptext-CryptExtOpenCER \
+          -W wineboot-ProxySettings \
+          -W version-VerQueryValue \
           -W setupapi-DiskSpaceList
 
-         cp eggroll/patches/proton/83-nv_low_latency_wine.patch \
-            eggroll/patches/proton/build_failure_prevention-add-nls.patch \
-            eggroll/patches/proton/add-envvar-to-gate-media-converter.patch \
-            eggroll/patches/proton/0001-ntdll-Downgrade-using-kernel-write-watches-from-MESS.patch \
-            eggroll/patches/proton/0001-win32u-add-env-switch-to-disable-wm-decorations.patch \
-            .
-
-        cd wine
-
-        for p in ../*.patch; do
+       for p in \
+          wine-staging/patches/loader-KeyboardLayouts/*.patch \
+          wine-staging/patches/ntdll-Hide_Wine_Exports/*.patch \
+          wine-staging/patches/kernel32-Debugger/*.patch \
+          wine-staging/patches/ntdll-ext4-case-folder/*.patch \
+          wine-staging/patches/user32-FlashWindowEx/*.patch \
+          wine-staging/patches/winex11-Fixed-scancodes/*.patch \
+          wine-staging/patches/winex11-Window_Style/*.patch \
+          wine-staging/patches/winex11-ime-check-thread-data/*.patch \
+          wine-staging/patches/winex11.drv-Query_server_position/*.patch \
+          wine-staging/patches/wininet-Cleanup/*.patch \
+          eggroll/patches/wine-hotfixes/staging/cryptext-CryptExtOpenCER/*.patch \
+          eggroll/patches/wine-hotfixes/staging/wineboot-ProxySettings/*.patch \
+          eggroll/patches/proton/83-nv_low_latency_wine.patch \
+          eggroll/patches/proton/build_failure_prevention-add-nls.patch \
+          eggroll/patches/proton/add-envvar-to-gate-media-converter.patch \
+          eggroll/patches/proton/0001-ntdll-Downgrade-using-kernel-write-watches-from-MESS.patch \
+          eggroll/patches/proton/0001-win32u-add-env-switch-to-disable-wm-decorations.patch;
+        do
           echo $p
-          patch -p1 < $p
+          patch -d wine -sNp1 < $p
         done
 
         autoreconf -f
