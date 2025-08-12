@@ -78,13 +78,6 @@ jobs:
           -W user32-alttab-focus \
           -W winex11-MWM_Decorations \
           -W server-Signal_Thread \
-          -W ntdll-Junction_Points \
-          -W server-Stored_ACLs \
-          -W server-File_Permissions \
-          -W kernel32-CopyFileEx \
-          -W shell32-Progress_Dialog \
-          -W shell32-ACE_Viewer \
-          -W dbghelp-Debug_Symbols \
           -W setupapi-DiskSpaceList
 
          cp eggroll/patches/proton/83-nv_low_latency_wine.patch \
