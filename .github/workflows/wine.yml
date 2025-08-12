@@ -58,11 +58,13 @@ jobs:
     - name: 'Checkout Repository'
       uses: actions/checkout@v3
 
-    - name: 'Fetch Wine'
+    - name: 'Fetch sources'
       run: |
-        mkdir -p wine wine-staging eggroll
-        curl -fL https://github.com/ValveSoftware/wine/archive/${{ env.WINE_COMMIT }}.tar.gz |
-          tar -xzf - -C wine --strip-components=1
+        git clone https://github.com/ValveSoftware/wine
+		git -C wine checkout ${{ env.WINE_COMMIT }}
+		git -C wine revert --no-commit e813ca5771658b00875924ab88d525322e50d39f
+
+        mkdir -p wine-staging eggroll
         curl -fL https://github.com/wine-staging/wine-staging/archive/${{ env.STAGING_COMMIT }}.tar.gz |
           tar -xzf - -C wine-staging --strip-components=1
         curl -fL https://github.com/GloriousEggroll/proton-ge-custom/archive/${{ env.EGGROLL_COMMIT }}.tar.gz |
