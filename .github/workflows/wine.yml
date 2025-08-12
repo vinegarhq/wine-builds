@@ -116,6 +116,7 @@ jobs:
         sudo apt install \
           autoconf \
           build-essential \
+          binutils \
           ccache \
           libasound2-dev \
           libdbus-1-dev \
@@ -145,8 +146,7 @@ jobs:
           libxkbregistry-dev \
           libxrandr-dev \
           libxrender-dev \
-          mingw-w64 \
-          strip
+          mingw-w64
 
     - name: 'Configure ccache'
       uses: hendrikmuhs/ccache-action@v1.2
