@@ -62,11 +62,11 @@ jobs:
       run: |
         mkdir -p wine wine-staging
         curl -fL https://github.com/ValveSoftware/wine/archive/${{ env.WINE_COMMIT }}.tar.gz |
-          tar xf - -C wine --strip-components=1
+          tar -xzf - -C wine --strip-components=1
         curl -fL https://github.com/wine-staging/wine-staging/archive/${{ env.STAGING_COMMIT }}.tar.gz |
-          tar -xf - -C wine-staging --strip-components=1
+          tar -xzf - -C wine-staging --strip-components=1
         curl -fL https://github.com/GloriousEggroll/proton-ge-custom/archive/${{ env.EGGROLL_COMMIT }}.tar.gz |
-          tar -xf - -C eggroll --strip-components=1
+          tar -xzf - -C eggroll --strip-components=1
 
     - name: 'Apply patches'
       run: |
