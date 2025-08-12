@@ -1,0 +1,248 @@
+diff --git a/dlls/kernelbase/kernelbase.spec b/dlls/kernelbase/kernelbase.spec
+index 89320a8180c..ac8e3c7a769 100644
+--- a/dlls/kernelbase/kernelbase.spec
++++ b/dlls/kernelbase/kernelbase.spec
+@@ -1728,7 +1728,7 @@
+ @ stdcall VirtualLock(ptr long)
+ @ stdcall VirtualProtect(ptr long long ptr)
+ @ stdcall VirtualProtectEx(long ptr long long ptr)
+-# @ stub VirtualProtectFromApp
++@ stdcall VirtualProtectFromApp(ptr long long ptr)
+ @ stdcall VirtualQuery(ptr ptr long)
+ @ stdcall VirtualQueryEx(long ptr ptr long)
+ @ stdcall VirtualUnlock(ptr long)
+diff --git a/dlls/kernelbase/memory.c b/dlls/kernelbase/memory.c
+index e102345119a..22818d54db7 100644
+--- a/dlls/kernelbase/memory.c
++++ b/dlls/kernelbase/memory.c
+@@ -592,6 +592,15 @@ BOOL WINAPI DECLSPEC_HOTPATCH VirtualProtectEx( HANDLE process, void *addr, SIZE
+     return set_ntstatus( NtProtectVirtualMemory( process, &addr, &size, new_prot, old_prot ));
+ }
+ 
++/***********************************************************************
++ *             VirtualProtectFromApp   (kernelbase.@)
++ */
++BOOL WINAPI DECLSPEC_HOTPATCH VirtualProtectFromApp( void *addr, SIZE_T size,
++    ULONG new_prot, ULONG *old_prot )
++{
++    /* Contrary to the documentation, VirtualProtectFromApp allows write+execute on desktop. */
++    return VirtualProtect( addr, size, new_prot, old_prot );
++}
+ 
+ /***********************************************************************
+  *             VirtualQuery   (kernelbase.@)
+diff --git a/dlls/kernelbase/tests/process.c b/dlls/kernelbase/tests/process.c
+index 90d6b5204eb..8cb6fda4968 100644
+--- a/dlls/kernelbase/tests/process.c
++++ b/dlls/kernelbase/tests/process.c
+@@ -38,6 +38,7 @@ static LPVOID (WINAPI *pMapViewOfFile3)(HANDLE, HANDLE, PVOID, ULONG64 offset, S
+ static LPVOID (WINAPI *pVirtualAlloc2)(HANDLE, void *, SIZE_T, DWORD, DWORD, MEM_EXTENDED_PARAMETER *, ULONG);
+ static LPVOID (WINAPI *pVirtualAlloc2FromApp)(HANDLE, void *, SIZE_T, DWORD, DWORD, MEM_EXTENDED_PARAMETER *, ULONG);
+ static PVOID (WINAPI *pVirtualAllocFromApp)(PVOID, SIZE_T, DWORD, DWORD);
++static BOOL (WINAPI *pVirtualProtectFromApp)(LPVOID,SIZE_T,ULONG,PULONG);
+ static HANDLE (WINAPI *pOpenFileMappingFromApp)( ULONG, BOOL, LPCWSTR);
+ static HANDLE (WINAPI *pCreateFileMappingFromApp)(HANDLE, PSECURITY_ATTRIBUTES, ULONG, ULONG64, PCWSTR);
+ static LPVOID (WINAPI *pMapViewOfFileFromApp)(HANDLE, ULONG, ULONG64, SIZE_T);
+@@ -481,6 +482,43 @@ static void test_VirtualAlloc2FromApp(void)
+     }
+ }
+ 
++static void test_VirtualProtectFromApp(void)
++{
++    ULONG old_prot;
++    void *p;
++    BOOL ret;
++
++    if (!pVirtualProtectFromApp)
++    {
++        win_skip("VirtualProtectFromApp is not available.\n");
++        return;
++    }
++
++    SetLastError(0xdeadbeef);
++    p = VirtualAlloc(NULL, 0x1000, MEM_COMMIT, PAGE_READWRITE);
++    ok(p && GetLastError() == 0xdeadbeef, "Got unexpected mem %p, GetLastError() %lu.\n", p, GetLastError());
++    ret = pVirtualProtectFromApp(p, 0x1000, PAGE_READONLY, &old_prot);
++    ok(ret && old_prot == PAGE_READWRITE, "Failed to change protection old_prot %lu, GetLastError() %lu\n",
++        old_prot, GetLastError());
++
++    ret = pVirtualProtectFromApp(p, 0x100000, PAGE_READWRITE, &old_prot);
++    ok(!ret && old_prot == PAGE_NOACCESS, "Call worked with overflowing size old_prot %lu\n", old_prot);
++
++    ret = pVirtualProtectFromApp(p, 0x1000, PAGE_EXECUTE_READ, NULL);
++    ok(!ret, "Call worked without old_prot\n");
++
++    ret = pVirtualProtectFromApp(p, 0x1000, PAGE_GUARD, &old_prot);
++    ok(!ret, "Call worked with an invalid new_prot parameter old_prot %lu\n", old_prot);
++
++    /* Works on desktop, but not on UWP */
++    ret = pVirtualProtectFromApp(p, 0x1000, PAGE_EXECUTE_READWRITE, &old_prot);
++    ok(ret && old_prot == PAGE_READONLY, "Failed to change protection old_prot %lu, GetLastError() %lu\n",
++        old_prot, GetLastError());
++
++    ret = VirtualFree(p, 0, MEM_RELEASE);
++    ok(ret, "Failed to free mem error %lu.\n", GetLastError());
++}
++
+ static void test_OpenFileMappingFromApp(void)
+ {
+     OBJECT_BASIC_INFORMATION info;
+@@ -601,6 +639,7 @@ static void init_funcs(void)
+     X(VirtualAlloc2);
+     X(VirtualAlloc2FromApp);
+     X(VirtualAllocFromApp);
++    X(VirtualProtectFromApp);
+     X(UnmapViewOfFile2);
+ 
+     hmod = GetModuleHandleA("ntdll.dll");
+@@ -618,6 +657,7 @@ START_TEST(process)
+     test_VirtualAlloc2();
+     test_VirtualAllocFromApp();
+     test_VirtualAlloc2FromApp();
++    test_VirtualProtectFromApp();
+     test_OpenFileMappingFromApp();
+     test_CreateFileMappingFromApp();
+     test_MapViewOfFileFromApp();
+diff --git a/dlls/ntdll/tests/virtual.c b/dlls/ntdll/tests/virtual.c
+index 48ba57fd7ad..222d6f8b57f 100644
+--- a/dlls/ntdll/tests/virtual.c
++++ b/dlls/ntdll/tests/virtual.c
+@@ -2300,6 +2300,77 @@ static void test_NtFreeVirtualMemory(void)
+     ok(status == STATUS_SUCCESS, "Unexpected status %08lx.\n", status);
+ }
+ 
++static void test_NtProtectVirtualMemory(void)
++{
++    void *addr, *addr2;
++    NTSTATUS status;
++    SIZE_T size;
++    DWORD old_prot;
++
++    size = page_size * 16;
++    addr = NULL;
++    status = NtAllocateVirtualMemory(NtCurrentProcess(), &addr, 0, &size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
++    ok(status == STATUS_SUCCESS, "Unexpected status %08lx.\n", status);
++
++    old_prot = 0;
++    status = NtProtectVirtualMemory(NtCurrentProcess(), &addr, &size, PAGE_READONLY, &old_prot);
++    ok(status == STATUS_SUCCESS, "Unexpected status %08lx.\n", status);
++    ok(old_prot == PAGE_READWRITE, "Unexpected old_prot %lx.\n", old_prot);
++
++    status = NtProtectVirtualMemory(NULL, &addr, &size, PAGE_READONLY, &old_prot);
++    ok(status == STATUS_INVALID_HANDLE, "Unexpected status %08lx.\n", status);
++
++    status = NtProtectVirtualMemory(NtCurrentProcess(), &addr, &size, PAGE_READONLY, NULL);
++    ok(status == STATUS_ACCESS_VIOLATION, "Unexpected status %08lx.\n", status);
++
++    status = NtProtectVirtualMemory(NtCurrentProcess(), &addr, &size, 0, &old_prot);
++    ok(status == STATUS_INVALID_PAGE_PROTECTION, "Unexpected status %08lx.\n", status);
++
++    size = page_size * 8;
++    status = NtProtectVirtualMemory(NtCurrentProcess(), &addr, &size, PAGE_READWRITE, &old_prot);
++    ok(status == STATUS_SUCCESS, "Unexpected status %08lx.\n", status);
++    ok(old_prot == PAGE_READONLY, "Unexpected old_prot %lx.\n", old_prot);
++    addr = (char *)addr + page_size * 8;
++    status = NtProtectVirtualMemory(NtCurrentProcess(), &addr, &size, PAGE_EXECUTE_READWRITE, &old_prot);
++    ok(status == STATUS_SUCCESS, "Unexpected status %08lx.\n", status);
++    ok(old_prot == PAGE_READONLY, "Unexpected old_prot %lx.\n", old_prot);
++    addr = (char *)addr - page_size * 8;
++    size = page_size * 16;
++    status = NtProtectVirtualMemory(NtCurrentProcess(), &addr, &size, PAGE_EXECUTE_READ, &old_prot);
++    ok(status == STATUS_SUCCESS, "Unexpected status %08lx.\n", status);
++    ok(old_prot == PAGE_READWRITE, "Unexpected old_prot %lx.\n", old_prot);
++
++    status = NtFreeVirtualMemory(NtCurrentProcess(), &addr, &size, MEM_RELEASE);
++    ok(status == STATUS_SUCCESS, "Unexpected status %08lx.\n", status);
++
++    addr = NULL;
++    size = page_size;
++    status = NtProtectVirtualMemory(NtCurrentProcess(), &addr, &size, PAGE_READONLY, &old_prot);
++    /* todo: STATUS_INVALID_PARAMETER in wine, STATUS_CONFLICTING_ADDRESSES in win64 */
++    ok(status, "Unexpected status %08lx.\n", status);
++    ok(old_prot == PAGE_NOACCESS, "Unexpected old_prot %lx.\n", old_prot);
++
++    status = NtAllocateVirtualMemory(NtCurrentProcess(), &addr, 0, &size, MEM_RESERVE, PAGE_READWRITE);
++    ok(status == STATUS_SUCCESS, "Unexpected status %08lx.\n", status);
++    status = NtProtectVirtualMemory(NtCurrentProcess(), &addr, &size, PAGE_READONLY, &old_prot);
++    ok(status == STATUS_NOT_COMMITTED, "Unexpected status %08lx.\n", status);
++    ok(old_prot == PAGE_NOACCESS, "Unexpected old_prot %lx.\n", old_prot);
++    status = NtAllocateVirtualMemory(NtCurrentProcess(), &addr, 0, &size, MEM_COMMIT, PAGE_READWRITE);
++    ok(status == STATUS_SUCCESS, "Unexpected status %08lx.\n", status);
++
++    addr2 = addr;
++    addr = (char *)addr + 1;
++    size = 1;
++    status = NtProtectVirtualMemory(NtCurrentProcess(), &addr, &size, PAGE_READONLY, &old_prot);
++    ok(status == STATUS_SUCCESS, "Unexpected status %08lx.\n", status);
++    ok(old_prot == PAGE_READWRITE, "Unexpected old_prot %lx.\n", old_prot);
++    ok(size == page_size, "Unexpected size %p.\n",  (void *)size);
++    ok(addr == addr2, "Got addr %p, addr2 %p.\n", addr, addr2);
++
++    status = NtFreeVirtualMemory(NtCurrentProcess(), &addr, &size, MEM_RELEASE);
++    ok(status == STATUS_SUCCESS, "Unexpected status %08lx.\n", status);
++}
++
+ static void test_prefetch(void)
+ {
+     NTSTATUS status;
+@@ -3048,6 +3119,7 @@ START_TEST(virtual)
+     test_NtAllocateVirtualMemoryEx();
+     test_NtAllocateVirtualMemoryEx_address_requirements();
+     test_NtFreeVirtualMemory();
++    test_NtProtectVirtualMemory();
+     test_RtlCreateUserStack();
+     test_NtMapViewOfSection();
+     test_NtMapViewOfSectionEx();
+diff --git a/dlls/ntdll/unix/virtual.c b/dlls/ntdll/unix/virtual.c
+index d955a617248..857073d6e4b 100644
+--- a/dlls/ntdll/unix/virtual.c
++++ b/dlls/ntdll/unix/virtual.c
+@@ -5632,11 +5632,15 @@ NTSTATUS WINAPI NtProtectVirtualMemory( HANDLE process, PVOID *addr_ptr, SIZE_T
+         status = server_queue_process_apc( process, &call, &result );
+         if (status != STATUS_SUCCESS) return status;
+ 
+-        if (result.virtual_protect.status == STATUS_SUCCESS)
++        switch (result.virtual_protect.status)
+         {
++        case STATUS_SUCCESS:
+             *addr_ptr = wine_server_get_ptr( result.virtual_protect.addr );
+             *size_ptr = result.virtual_protect.size;
++        case STATUS_NOT_COMMITTED:
++        case STATUS_INVALID_PARAMETER:
+             *old_prot = result.virtual_protect.prot;
++            break;
+         }
+         return result.virtual_protect.status;
+     }
+@@ -5683,9 +5687,17 @@ NTSTATUS WINAPI NtProtectVirtualMemory( HANDLE process, PVOID *addr_ptr, SIZE_T
+                 }
+             }
+         }
+-        else status = STATUS_NOT_COMMITTED;
++        else
++        {
++            status = STATUS_NOT_COMMITTED;
++            *old_prot = PAGE_NOACCESS;
++        }
++    }
++    else
++    {
++        status = STATUS_INVALID_PARAMETER;
++        *old_prot = PAGE_NOACCESS;
+     }
+-    else status = STATUS_INVALID_PARAMETER;
+ 
+     if (!status) VIRTUAL_DEBUG_DUMP_VIEW( view );
+ 
+diff --git a/include/winbase.h b/include/winbase.h
+index 172a921c3b2..a26484a13cb 100644
+--- a/include/winbase.h
++++ b/include/winbase.h
+@@ -2837,6 +2837,7 @@ WINBASEAPI BOOL        WINAPI VirtualFreeEx(HANDLE,LPVOID,SIZE_T,DWORD);
+ WINBASEAPI BOOL        WINAPI VirtualLock(LPVOID,SIZE_T);
+ WINBASEAPI BOOL        WINAPI VirtualProtect(LPVOID,SIZE_T,DWORD,LPDWORD);
+ WINBASEAPI BOOL        WINAPI VirtualProtectEx(HANDLE,LPVOID,SIZE_T,DWORD,LPDWORD);
++WINBASEAPI BOOL        WINAPI VirtualProtectFromApp(LPVOID,SIZE_T,ULONG,PULONG);
+ WINBASEAPI SIZE_T      WINAPI VirtualQuery(LPCVOID,PMEMORY_BASIC_INFORMATION,SIZE_T);
+ WINBASEAPI SIZE_T      WINAPI VirtualQueryEx(HANDLE,LPCVOID,PMEMORY_BASIC_INFORMATION,SIZE_T);
+ WINBASEAPI BOOL        WINAPI VirtualUnlock(LPVOID,SIZE_T);

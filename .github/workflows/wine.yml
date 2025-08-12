@@ -6,15 +6,18 @@ permissions:
   contents: read
   pull-requests: read
 env:
-  WINE_VERSION: "10.0"
+  WINE_COMMIT: "253fb023"
+  STAGING_COMMIT: "05bc4b82"
+  EGGROLL_COMMIT: "75a9f080"
+  NAME: "proton-10.0-vinegarhq-${{ env.WINE_COMMIT }}"
+  INSTALL: "${{ github.workspace }}/${{ env.NAME }}"
+  ARCHIVE: "${{ env.INSTALL }}.tar.xz"
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: 'Setup environment'
+    - name: 'Install dependencies'
       run: |
-        echo "WINE_ARCHIVE=${{ github.workspace }}/wine-vinegarhq-build-${{ env.WINE_VERSION }}.tar.xz" >> $GITHUB_ENV
-        echo "WINE_PREFIX=${{ github.workspace }}/wine-vinegarhq-build-${{ env.WINE_VERSION }}" >> $GITHUB_ENV
         echo "PATH=/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH" >> $GITHUB_ENV
 
         sudo apt update -y
@@ -59,33 +62,58 @@ jobs:
 
     - name: 'Fetch Wine'
       run: |
-        git clone https://gitlab.winehq.org/wine/wine.git --depth 1 \
-          --branch wine-${{ env.WINE_VERSION }}
+        mkdir -p wine wine-staging
+        curl -fL https://github.com/ValveSoftware/wine/archive/${{ env.WINE_COMMIT }}.tar.gz |
+          tar xf - -C wine
+        curl -fL https://github.com/wine-staging/wine-staging/archive/${{ env.STAGING_COMMIT }}.tar.gz |
+          tar -xf - -C wine-staging
+        curl -fL https://github.com/GloriousEggroll/proton-ge-custom/archive/${{ env.EGGROLL_COMMIT }}.tar.gz |
+          tar -xf - -C eggroll
 
-    - name: 'Apply Wine Staging patchset'
+    - name: 'Apply patches'
       run: |
-        git clone https://gitlab.winehq.org/wine/wine-staging.git --depth 1 \
-          --branch v${{ env.WINE_VERSION }}
-        wine-staging/staging/patchinstall.py --destdir=wine --all
-    - name: 'Apply local patches'
-      working-directory: wine
-      run: |
+        wine-staging/staging/patchinstall.py --destdir=wine --all --no-autoconf \
+          -W winex11-_NET_ACTIVE_WINDOW \
+          -W winex11-WM_WINDOWPOSCHANGING \
+          -W user32-alttab-focus \
+          -W winex11-MWM_Decorations \
+          -W server-Signal_Thread \
+          -W ntdll-Junction_Points \
+          -W server-Stored_ACLs \
+          -W server-File_Permissions \
+          -W kernel32-CopyFileEx \
+          -W shell32-Progress_Dialog \
+          -W shell32-ACE_Viewer \
+          -W dbghelp-Debug_Symbols \
+          -W setupapi-DiskSpaceList
+
+         cp eggroll/patches/proton/83-nv_low_latency_wine.patch \
+            eggroll/patches/proton/build_failure_prevention-add-nls.patch \
+            eggroll/patches/proton/add-envvar-to-gate-media-converter.patch \
+            eggroll/patches/proton/0001-ntdll-Downgrade-using-kernel-write-watches-from-MESS.patch \
+            eggroll/patches/proton/0001-win32u-add-env-switch-to-disable-wm-decorations.patch \
+            .
+
         for p in ../*.patch; do
           echo $p
           patch -p1 < $p
         done
 
+        cd wine
+        autoreconf -f
+        ./tools/make_requests
+
     - name: 'Configure Wine'
       working-directory: wine
       run: |
-        mkdir -p ${{ env.WINE_PREFIX }}
+        mkdir -p ${{ env.INSTALL }}
         ./configure \
           CC='ccache gcc' \
           x86_64_CC='ccache x86_64-w64-mingw32-gcc' \
           CFLAGS='-O3 -pipe -march=x86-64-v2 -mpclmul -mavx' \
           CXXFLAGS='-O3 -pipe -march=x86-64-v2 -mpclmul -mavx' \
           CROSSCFLAGS='-O3 -pipe -march=x86-64-v2 -mpclmul -mavx' \
-          --prefix=${{ env.WINE_PREFIX }} \
+          --prefix=${{ env.INSTALL }} \
           --enable-win64 \
           --host=x86_64 \
           --build=x86_64 \
@@ -114,22 +142,23 @@ jobs:
     - name: 'Build Wine'
       working-directory: wine
       run: make -j$(($(nproc) + 1))
+
     - name: 'Install Wine'
       working-directory: wine
       run: make install LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
 
     - name: 'Strip Wine'
-      working-directory: ${{ env.WINE_PREFIX }}
+      working-directory: ${{ env.INSTALL }}
       run: |
         x86_64-w64-mingw32-strip --strip-unneeded lib/wine/x86_64-windows/*.dll
 
     - name: Make artifacts
       run: |
-        cd $(dirname ${{ env.WINE_PREFIX }})
-        XZ_OPT=-9 tar -Jcf ${{ env.WINE_ARCHIVE }} $(basename ${{ env.WINE_PREFIX }})
+        cd $(dirname ${{ env.INSTALL }})
+        XZ_OPT=-9 tar -Jcf ${{ env.ARCHIVE }} $(basename ${{ env.INSTALL }})
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: wine-vinegarhq-build-${{ env.WINE_VERSION }}
-        path: ${{ env.WINE_ARCHIVE }}
+        name: ${{ env.NAME }}
+        path: ${{ env.ARCHIVE }}
