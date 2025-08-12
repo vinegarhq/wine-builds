@@ -112,6 +112,7 @@ jobs:
       run: |
         echo "PATH=/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH" >> $GITHUB_ENV
 
+        sudo apt update -y
         sudo apt install \
           build-essential \
           mingw-w64 \
