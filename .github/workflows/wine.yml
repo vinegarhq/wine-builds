@@ -81,7 +81,7 @@ jobs:
           -W version-VerQueryValue \
           -W setupapi-DiskSpaceList
 
-       for p in \
+        for p in \
           wine-staging/patches/loader-KeyboardLayouts/*.patch \
           wine-staging/patches/ntdll-Hide_Wine_Exports/*.patch \
           wine-staging/patches/kernel32-Debugger/*.patch \
