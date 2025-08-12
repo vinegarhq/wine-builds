@@ -61,8 +61,8 @@ jobs:
     - name: 'Fetch sources'
       run: |
         git clone https://github.com/ValveSoftware/wine
-		git -C wine checkout ${{ env.WINE_COMMIT }}
-		git -C wine revert --no-commit e813ca5771658b00875924ab88d525322e50d39f
+        git -C wine checkout ${{ env.WINE_COMMIT }}
+        git -C wine revert --no-commit e813ca5771658b00875924ab88d525322e50d39f
 
         mkdir -p wine-staging eggroll
         curl -fL https://github.com/wine-staging/wine-staging/archive/${{ env.STAGING_COMMIT }}.tar.gz |
