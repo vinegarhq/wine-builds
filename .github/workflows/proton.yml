@@ -1,7 +1,5 @@
-name: Build Wine
-on:
-  push:
-  pull_request:
+name: Build Proton
+on: workflow_dispatch 
 permissions:
   contents: read
   pull-requests: read
