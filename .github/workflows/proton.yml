@@ -1,0 +1,212 @@
+name: Build Wine
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+  pull-requests: read
+env:
+  WINE_COMMIT: "253fb023"
+  STAGING_COMMIT: "05bc4b82"
+  EGGROLL_COMMIT: "75a9f080"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Install dependencies'
+      run: |
+        echo "NAME=vinegarhq-wine-10.0-${{ env.WINE_COMMIT }}" >> $GITHUB_ENV
+        
+    - name: 'Checkout Repository'
+      uses: actions/checkout@v3
+
+    - name: 'Fetch sources'
+      run: |
+        git clone https://github.com/ValveSoftware/wine
+        git -C wine checkout ${{ env.WINE_COMMIT }}
+        git -C wine revert --no-commit e813ca5771658b00875924ab88d525322e50d39f
+
+        mkdir -p wine-staging eggroll
+        curl -fL https://github.com/wine-staging/wine-staging/archive/${{ env.STAGING_COMMIT }}.tar.gz |
+          tar -xzf - -C wine-staging --strip-components=1
+        curl -fL https://github.com/GloriousEggroll/proton-ge-custom/archive/${{ env.EGGROLL_COMMIT }}.tar.gz |
+          tar -xzf - -C eggroll --strip-components=1
+
+    - name: 'Apply patches'
+      run: |
+        echo "INSTALL=${{ github.workspace }}/${{ env.NAME }}" >> $GITHUB_ENV
+
+        wine-staging/staging/patchinstall.py --destdir=wine --all --no-autoconf \
+          -W winex11-_NET_ACTIVE_WINDOW \
+          -W winex11-WM_WINDOWPOSCHANGING \
+          -W user32-alttab-focus \
+          -W winex11-MWM_Decorations \
+          -W server-Signal_Thread \
+          -W ntdll-Junction_Points \
+          -W server-Stored_ACLs \
+          -W server-File_Permissions \
+          -W kernel32-CopyFileEx \
+          -W shell32-Progress_Dialog \
+          -W shell32-ACE_Viewer \
+          -W dbghelp-Debug_Symbols \
+          \
+          -W ntdll-Syscall_Emulation \
+          -W eventfd_synchronization \
+          -W server-PeekMessage \
+          -W server-Realtime_Priority \
+          -W msxml3-FreeThreadedXMLHTTP60 \
+          -W ntdll-ForceBottomUpAlloc \
+          -W ntdll-NtDevicePath \
+          -W ntdll_reg_flush \
+          -W user32-rawinput-mouse \
+          -W user32-recursive-activation \
+          -W d3dx11_43-D3DX11CreateTextureFromMemory \
+          -W d3dx9_36-D3DXStubs \
+          -W wined3d-zero-inf-shaders \
+          -W ntdll-RtlQueryPackageIdentity \
+          \
+          -W loader-KeyboardLayouts \
+          -W ntdll-Hide_Wine_Exports \
+          -W kernel32-Debugger \
+          -W ntdll-ext4-case-folder \
+          -W user32-FlashWindowEx \
+          -W winex11-Fixed-scancodes \
+          -W winex11-Window_Style \
+          -W winex11-ime-check-thread-data \
+          -W winex11.drv-Query_server_position \
+          -W wininet-Cleanup \
+          \
+          -W cryptext-CryptExtOpenCER \
+          -W wineboot-ProxySettings \
+          -W version-VerQueryValue \
+          -W setupapi-DiskSpaceList
+
+        for p in \
+          wine-staging/patches/loader-KeyboardLayouts/*.patch \
+          wine-staging/patches/ntdll-Hide_Wine_Exports/*.patch \
+          wine-staging/patches/kernel32-Debugger/*.patch \
+          wine-staging/patches/ntdll-ext4-case-folder/*.patch \
+          wine-staging/patches/user32-FlashWindowEx/*.patch \
+          wine-staging/patches/winex11-Fixed-scancodes/*.patch \
+          wine-staging/patches/winex11-Window_Style/*.patch \
+          wine-staging/patches/winex11-ime-check-thread-data/*.patch \
+          wine-staging/patches/winex11.drv-Query_server_position/*.patch \
+          wine-staging/patches/wininet-Cleanup/*.patch \
+          eggroll/patches/wine-hotfixes/staging/cryptext-CryptExtOpenCER/*.patch \
+          eggroll/patches/wine-hotfixes/staging/wineboot-ProxySettings/*.patch \
+          eggroll/patches/proton/83-nv_low_latency_wine.patch \
+          eggroll/patches/proton/build_failure_prevention-add-nls.patch \
+          eggroll/patches/proton/add-envvar-to-gate-media-converter.patch \
+          eggroll/patches/proton/0001-ntdll-Downgrade-using-kernel-write-watches-from-MESS.patch \
+          eggroll/patches/proton/0001-win32u-add-env-switch-to-disable-wm-decorations.patch \
+          *.patch
+        do
+          echo $p
+          patch -d wine -sNp1 < $p
+        done
+
+        cd wine
+        ./autogen.sh
+
+    - name: 'Install build dependencies'
+      run: |
+        echo "PATH=/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH" >> $GITHUB_ENV
+
+        sudo apt update -y
+        sudo apt install \
+          autoconf \
+          build-essential \
+          binutils \
+          ccache \
+          libasound2-dev \
+          libdbus-1-dev \
+          libfontconfig-dev \
+          libfreetype-dev \
+          libgl-dev \
+          libgstreamer-plugins-base1.0-dev \
+          libgstreamer1.0-dev \
+          libkrb5-dev \
+          libosmesa6-dev \
+          libpulse-dev \
+          libsdl2-dev \
+          libudev-dev \
+          libunwind-dev \
+          libusb-1.0-0-dev \
+          libv4l-dev \
+          libvulkan-dev \
+          libwayland-dev \
+          libx11-dev \
+          libxcomposite-dev \
+          libxcursor-dev \
+          libxext-dev \
+          libxfixes-dev \
+          libxi-dev \
+          libxinerama-dev \
+          libxkbcommon-dev \
+          libxkbregistry-dev \
+          libxrandr-dev \
+          libxrender-dev \
+          mingw-w64
+
+    - name: 'Configure ccache'
+      uses: hendrikmuhs/ccache-action@v1.2
+
+    - name: 'Configure Wine'
+      working-directory: wine
+      run: |
+        mkdir -p ${{ env.INSTALL }}
+        ./configure \
+          CC='ccache gcc' \
+          x86_64_CC='ccache x86_64-w64-mingw32-gcc' \
+          CFLAGS='-O3 -pipe -march=x86-64-v2 -mpclmul -mavx' \
+          CXXFLAGS='-O3 -pipe -march=x86-64-v2 -mpclmul -mavx' \
+          CROSSCFLAGS='-O3 -pipe -march=x86-64-v2 -mpclmul -mavx' \
+          --prefix=${{ env.INSTALL }} \
+          --enable-win64 \
+          --host=x86_64 \
+          --build=x86_64 \
+          --with-mingw=ccache x86_64-w64-mingw64-gcc \
+          --disable-win16 \
+          --disable-tests \
+          --with-alsa \
+          --with-pulse \
+          --with-dbus \
+          --with-fontconfig \
+          --with-freetype \
+          --with-opengl \
+          --with-wayland \
+          --with-x \
+          --with-xcomposite \
+          --with-xfixes \
+          --with-xinput2 \
+          --with-xrandr \
+          --with-xrender \
+          --with-gstreamer \
+          --with-vulkan \
+          --with-krb5 \
+          --with-usb \
+          --with-v4l2
+
+    - name: 'Build Wine'
+      working-directory: wine
+      run: make -j$(($(nproc) + 1))
+
+    - name: 'Install Wine'
+      working-directory: wine
+      run: make install LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
+
+    - name: 'Strip Wine DLLs'
+      working-directory: ${{ env.INSTALL }}
+      run: |
+        x86_64-w64-mingw32-strip --strip-unneeded lib/wine/x86_64-windows/*.dll
+
+    - name: Make artifacts
+      run: |
+        cd $(dirname ${{ env.INSTALL }})
+        XZ_OPT=-9 tar -Jcf ${{ env.NAME }}.tar.xz $(basename ${{ env.INSTALL }})
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.NAME }}
+        path: ${{ env.NAME }}.tar.xz

@@ -6,107 +6,30 @@ permissions:
   contents: read
   pull-requests: read
 env:
-  WINE_COMMIT: "253fb023"
-  STAGING_COMMIT: "05bc4b82"
-  EGGROLL_COMMIT: "75a9f080"
+  WINE_VERSION: "10.13"
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - name: 'Install dependencies'
       run: |
-        echo "NAME=vinegarhq-wine-10.0-${{ env.WINE_COMMIT }}" >> $GITHUB_ENV
+        echo "NAME=vinegarhq-wine-${{ env.WINE_VERSION }}" >> $GITHUB_ENV
         
     - name: 'Checkout Repository'
       uses: actions/checkout@v3
 
     - name: 'Fetch sources'
       run: |
-        git clone https://github.com/ValveSoftware/wine
-        git -C wine checkout ${{ env.WINE_COMMIT }}
-        git -C wine revert --no-commit e813ca5771658b00875924ab88d525322e50d39f
-
-        mkdir -p wine-staging eggroll
-        curl -fL https://github.com/wine-staging/wine-staging/archive/${{ env.STAGING_COMMIT }}.tar.gz |
-          tar -xzf - -C wine-staging --strip-components=1
-        curl -fL https://github.com/GloriousEggroll/proton-ge-custom/archive/${{ env.EGGROLL_COMMIT }}.tar.gz |
-          tar -xzf - -C eggroll --strip-components=1
+        git clone https://gitlab.winehq.org/wine/wine.git --depth 1 \
+          --branch wine-${{ env.WINE_VERSION }}
+        git clone https://gitlab.winehq.org/wine/wine-staging.git --depth 1 \
+          --branch v${{ env.WINE_VERSION }}
 
     - name: 'Apply patches'
       run: |
         echo "INSTALL=${{ github.workspace }}/${{ env.NAME }}" >> $GITHUB_ENV
 
-        wine-staging/staging/patchinstall.py --destdir=wine --all --no-autoconf \
-          -W winex11-_NET_ACTIVE_WINDOW \
-          -W winex11-WM_WINDOWPOSCHANGING \
-          -W user32-alttab-focus \
-          -W winex11-MWM_Decorations \
-          -W server-Signal_Thread \
-          -W ntdll-Junction_Points \
-          -W server-Stored_ACLs \
-          -W server-File_Permissions \
-          -W kernel32-CopyFileEx \
-          -W shell32-Progress_Dialog \
-          -W shell32-ACE_Viewer \
-          -W dbghelp-Debug_Symbols \
-          \
-          -W ntdll-Syscall_Emulation \
-          -W eventfd_synchronization \
-          -W server-PeekMessage \
-          -W server-Realtime_Priority \
-          -W msxml3-FreeThreadedXMLHTTP60 \
-          -W ntdll-ForceBottomUpAlloc \
-          -W ntdll-NtDevicePath \
-          -W ntdll_reg_flush \
-          -W user32-rawinput-mouse \
-          -W user32-recursive-activation \
-          -W d3dx11_43-D3DX11CreateTextureFromMemory \
-          -W d3dx9_36-D3DXStubs \
-          -W wined3d-zero-inf-shaders \
-          -W ntdll-RtlQueryPackageIdentity \
-          \
-          -W loader-KeyboardLayouts \
-          -W ntdll-Hide_Wine_Exports \
-          -W kernel32-Debugger \
-          -W ntdll-ext4-case-folder \
-          -W user32-FlashWindowEx \
-          -W winex11-Fixed-scancodes \
-          -W winex11-Window_Style \
-          -W winex11-ime-check-thread-data \
-          -W winex11.drv-Query_server_position \
-          -W wininet-Cleanup \
-          \
-          -W cryptext-CryptExtOpenCER \
-          -W wineboot-ProxySettings \
-          -W version-VerQueryValue \
-          -W setupapi-DiskSpaceList
-
-        for p in \
-          wine-staging/patches/loader-KeyboardLayouts/*.patch \
-          wine-staging/patches/ntdll-Hide_Wine_Exports/*.patch \
-          wine-staging/patches/kernel32-Debugger/*.patch \
-          wine-staging/patches/ntdll-ext4-case-folder/*.patch \
-          wine-staging/patches/user32-FlashWindowEx/*.patch \
-          wine-staging/patches/winex11-Fixed-scancodes/*.patch \
-          wine-staging/patches/winex11-Window_Style/*.patch \
-          wine-staging/patches/winex11-ime-check-thread-data/*.patch \
-          wine-staging/patches/winex11.drv-Query_server_position/*.patch \
-          wine-staging/patches/wininet-Cleanup/*.patch \
-          eggroll/patches/wine-hotfixes/staging/cryptext-CryptExtOpenCER/*.patch \
-          eggroll/patches/wine-hotfixes/staging/wineboot-ProxySettings/*.patch \
-          eggroll/patches/proton/83-nv_low_latency_wine.patch \
-          eggroll/patches/proton/build_failure_prevention-add-nls.patch \
-          eggroll/patches/proton/add-envvar-to-gate-media-converter.patch \
-          eggroll/patches/proton/0001-ntdll-Downgrade-using-kernel-write-watches-from-MESS.patch \
-          eggroll/patches/proton/0001-win32u-add-env-switch-to-disable-wm-decorations.patch \
-          *.patch
-        do
-          echo $p
-          patch -d wine -sNp1 < $p
-        done
-
-        cd wine
-        ./autogen.sh
+        wine-staging/staging/patchinstall.py --destdir=wine --all
 
     - name: 'Install build dependencies'
       run: |
