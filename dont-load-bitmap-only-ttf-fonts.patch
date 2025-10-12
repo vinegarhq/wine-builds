@@ -1,0 +1,57 @@
+From af8b741b3d6f4189b5c2a34dd0e76dc8ad117e7c Mon Sep 17 00:00:00 2001
+From: Paul Gofman <pgofman@codeweavers.com>
+Date: Fri, 8 Jul 2022 20:01:17 -0500
+Subject: [PATCH] win32u: Don't load bitmap only TTF fonts without bitmap
+ table.
+
+---
+ dlls/win32u/freetype.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/dlls/win32u/freetype.c b/dlls/win32u/freetype.c
+index f00df7ed86d..4514574ec42 100644
+--- a/dlls/win32u/freetype.c
++++ b/dlls/win32u/freetype.c
+@@ -254,6 +254,8 @@ MAKE_FUNCPTR(FcStrSetMember);
+ #define GET_BE_DWORD(x) RtlUlongByteSwap(x)
+ #endif
+ 
++#define MS_EBDT_TAG MS_MAKE_TAG('E','B','D','T')
++
+ /* 'gasp' flags */
+ #define GASP_GRIDFIT 0x01
+ #define GASP_DOGRAY  0x02
+@@ -1177,6 +1179,8 @@ static struct unix_face *unix_face_create( const char *unix_name, void *data_ptr
+     struct stat st;
+     DWORD face_count;
+     int fd, length;
++    FT_Error error;
++    FT_ULong len;
+ 
+     TRACE( "unix_name %s, face_index %u, data_ptr %p, data_size %u, flags %#x\n",
+            unix_name, face_index, data_ptr, data_size, flags );
+@@ -1268,7 +1272,20 @@ static struct unix_face *unix_face_create( const char *unix_name, void *data_ptr
+ 
+         This->ntm_flags = get_ntm_flags( This->ft_face );
+         This->font_version = get_font_version( This->ft_face );
+-        if (!This->scalable) get_bitmap_size( This->ft_face, &This->size );
++        if (!This->scalable)
++        {
++            error = pFT_Load_Sfnt_Table( This->ft_face, RtlUlongByteSwap(MS_EBDT_TAG), 0, NULL, &len );
++            if (error == FT_Err_Table_Missing)
++            {
++                WARN( "EBDT table is missing in bitmap only font %s.\n",
++                      debugstr_w(ft_face_get_family_name( This->ft_face, system_lcid )));
++                pFT_Done_Face( This->ft_face );
++                free( This );
++                This = NULL;
++                goto done;
++            }
++            get_bitmap_size( This->ft_face, &This->size );
++        }
+         get_fontsig( This->ft_face, &This->fs );
+     }
+     else
+-- 
+GitLab
+

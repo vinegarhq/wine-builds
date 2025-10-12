@@ -4,7 +4,7 @@ permissions:
   contents: read
   pull-requests: read
 env:
-  WINE_VERSION: "10.13"
+  WINE_VERSION: "10.16"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,6 +28,8 @@ jobs:
         echo "INSTALL=${{ github.workspace }}/${{ env.NAME }}" >> $GITHUB_ENV
 
         wine-staging/staging/patchinstall.py --destdir=wine --all
+        patch -d wine -sNp1 < dont-load-bitmap-only-ttf-fonts.patch
+        patch -d wine -sNp1 < xfixes-hide-cursor.patch
 
     - name: 'Install build dependencies'
       run: |
