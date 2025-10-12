@@ -12,6 +12,9 @@ jobs:
     - name: 'Install dependencies'
       run: |
         echo "NAME=vinegarhq-wine-${{ env.WINE_VERSION }}" >> $GITHUB_ENV
+
+        wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/refs/heads/6.15/main/include/uapi/linux/ntsync.h
+        wget -O /usr/include/linux/userfaultfd.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/refs/heads/6.15/main/include/uapi/linux/userfaultfd.h
         
     - name: 'Checkout Repository'
       uses: actions/checkout@v3
