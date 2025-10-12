@@ -78,13 +78,12 @@ jobs:
     - name: 'Configure Wine'
       working-directory: wine
       run: |
+        export CFLAGS='-O2 -ftree-vectorize -pipe -march=x86-64-v2 -mpclmul -mavx -floop-nest-optimize -fgraphite-identity'
+        export CROSSCFLAGS="$CFLAGS"
         mkdir -p ${{ env.INSTALL }}
         ./configure \
           CC='ccache gcc' \
           x86_64_CC='ccache x86_64-w64-mingw32-gcc' \
-          CFLAGS='-O3 -pipe -march=x86-64-v2 -mpclmul -mavx' \
-          CXXFLAGS='-O3 -pipe -march=x86-64-v2 -mpclmul -mavx' \
-          CROSSCFLAGS='-O3 -pipe -march=x86-64-v2 -mpclmul -mavx' \
           --prefix=${{ env.INSTALL }} \
           --enable-win64 \
           --host=x86_64 \
