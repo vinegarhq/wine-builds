@@ -33,7 +33,7 @@ jobs:
         wine-staging/staging/patchinstall.py --destdir=wine --all
         patch -d wine -sNp1 < dont-load-bitmap-only-ttf-fonts.patch
         patch -d wine -sNp1 < xfixes-hide-cursor.patch
-        patch -d wine -sNp1 < ntsync-fix-32-bit-processes.patch
+        patch -d wine -sNp1 < fix-winecfg-audio-crash.patch
 
     - name: 'Install build dependencies'
       run: |
