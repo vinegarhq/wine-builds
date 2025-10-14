@@ -81,7 +81,7 @@ jobs:
     - name: 'Configure Wine'
       working-directory: wine
       run: |
-        export CFLAGS='-O2 -ftree-vectorize -pipe -march=x86-64-v2 -mpclmul -mavx -floop-nest-optimize -fgraphite-identity'
+        export CFLAGS='-O2 -ftree-vectorize -pipe -march=x86-64-v2 -mpclmul -msse4.2 -floop-nest-optimize -fgraphite-identity'
         export CROSSCFLAGS="$CFLAGS"
         mkdir -p ${{ env.INSTALL }}
         ./configure \
