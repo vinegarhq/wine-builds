@@ -29,8 +29,8 @@ jobs:
     - name: 'Apply patches'
       run: |
         echo "INSTALL=${{ github.workspace }}/${{ env.NAME }}" >> $GITHUB_ENV
-
-        wine-staging/staging/patchinstall.py --destdir=wine --all
+        
+        wine-staging/staging/patchinstall.py --destdir=wine fonts-Missing_Fonts
         patch -d wine -sNp1 < 0001-revert-win32u-Update-client-surfaces-starting-from-toplevel.patch
         patch -d wine -sNp1 < dont-load-bitmap-only-ttf-fonts.patch
         patch -d wine -sNp1 < xfixes-hide-cursor.patch
