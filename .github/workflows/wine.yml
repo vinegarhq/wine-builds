@@ -46,21 +46,15 @@ jobs:
           build-essential \
           binutils \
           ccache \
+          gettext \
           libasound2-dev \
-          libdbus-1-dev \
           libfontconfig-dev \
           libfreetype-dev \
           libgl-dev \
-          libgstreamer-plugins-base1.0-dev \
-          libgstreamer1.0-dev \
-          libkrb5-dev \
-          libosmesa6-dev \
+          libgnutls28-dev \
           libpulse-dev \
           libsdl2-dev \
-          libudev-dev \
           libunwind-dev \
-          libusb-1.0-0-dev \
-          libv4l-dev \
           libvulkan-dev \
           libwayland-dev \
           libx11-dev \
@@ -69,7 +63,6 @@ jobs:
           libxext-dev \
           libxfixes-dev \
           libxi-dev \
-          libxinerama-dev \
           libxkbcommon-dev \
           libxkbregistry-dev \
           libxrandr-dev \
