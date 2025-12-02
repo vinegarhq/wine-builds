@@ -93,7 +93,7 @@ jobs:
           --without-cups \
           --without-dbus \
           --without-ffmpeg \
-          --without-gphoto 
+          --without-gphoto \
           --without-gssapi \
           --without-gstreamer \
           --without-hwloc \
