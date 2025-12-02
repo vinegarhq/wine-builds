@@ -31,6 +31,7 @@ jobs:
         echo "INSTALL=${{ github.workspace }}/${{ env.NAME }}" >> $GITHUB_ENV
 
         wine-staging/staging/patchinstall.py --destdir=wine --all
+        patch -d wine -sNp1 < 0001-revert-win32u-Update-client-surfaces-starting-from-toplevel.patch
         patch -d wine -sNp1 < dont-load-bitmap-only-ttf-fonts.patch
         patch -d wine -sNp1 < xfixes-hide-cursor.patch
         patch -d wine -sNp1 < fix-winecfg-audio-crash.patch
