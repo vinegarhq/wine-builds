@@ -95,12 +95,40 @@ jobs:
           --with-mingw=ccache x86_64-w64-mingw64-gcc \
           --disable-win16 \
           --disable-tests \
+          --without-capi \
+          --without-coreaudio \
+          --without-cups \
+          --without-dbus \
+          --without-ffmpeg \
+          --without-gphoto 
+          --without-gssapi \
+          --without-gstreamer \
+          --without-hwloc \
+          --without-inotify \
+          --without-krb5 \
+          --without-netapi \
+          --without-opencl \
+          --without-oss \
+          --without-pcap \
+          --without-pcsclite \
+          --without-sane \
+          --without-udev \
+          --without-usb \
+          --without-v4l2 \
+          --without-xinerama \
+          --without-xinput \
+          --without-xxf86vm \
           --with-alsa \
-          --with-pulse \
-          --with-dbus \
           --with-fontconfig \
           --with-freetype \
+          --with-gettext \
+          --with-gnutls \
           --with-opengl \
+          --with-pthread \
+          --with-pulse \
+          --with-sdl \
+          --with-unwind \
+          --with-vulkan \
           --with-wayland \
           --with-x \
           --with-xcomposite \
@@ -108,11 +136,8 @@ jobs:
           --with-xinput2 \
           --with-xrandr \
           --with-xrender \
-          --with-gstreamer \
-          --with-vulkan \
-          --with-krb5 \
-          --with-usb \
-          --with-v4l2
+          --with-xshape \
+          --with-xshm
 
     - name: 'Build Wine'
       working-directory: wine
