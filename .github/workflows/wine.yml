@@ -32,6 +32,7 @@ jobs:
         
         wine-staging/staging/patchinstall.py --destdir=wine fonts-Missing_Fonts
         patch -d wine -sNp1 < 0001-revert-win32u-Update-client-surfaces-starting-from-toplevel.patch
+        patch -d wine -sNp1 < 0001-win32u-Avoid-a-crash-when-drawable-fails-to-be-creat.patch
         patch -d wine -sNp1 < dont-load-bitmap-only-ttf-fonts.patch
         patch -d wine -sNp1 < xfixes-hide-cursor.patch
         patch -d wine -sNp1 < fix-winecfg-audio-crash.patch
