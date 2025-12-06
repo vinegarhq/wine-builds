@@ -109,7 +109,6 @@ jobs:
           --without-usb \
           --without-v4l2 \
           --without-xinerama \
-          --without-xinput \
           --without-xxf86vm \
           --with-alsa \
           --with-fontconfig \
@@ -126,6 +125,7 @@ jobs:
           --with-x \
           --with-xcomposite \
           --with-xfixes \
+          --with-xinput \
           --with-xinput2 \
           --with-xrandr \
           --with-xrender \
