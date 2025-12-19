@@ -35,6 +35,7 @@ jobs:
         patch -d wine -sNp1 < 0001-win32u-Avoid-a-crash-when-drawable-fails-to-be-creat.patch
         patch -d wine -sNp1 < 0001-win32u-Update-window-state-after-setting-internal-pi.patch
         patch -d wine -sNp1 < 0001-win32u-Iterate-the-client-surfaces-rather-than-the-t.patch
+        patch -d wine -sNp1 < 0001-wined3d-Remove-now-unnecessary-pixel-format-restorat.patch
         patch -d wine -sNp1 < dont-load-bitmap-only-ttf-fonts.patch
         patch -d wine -sNp1 < xfixes-hide-cursor.patch
         patch -d wine -sNp1 < fix-winecfg-audio-crash.patch
