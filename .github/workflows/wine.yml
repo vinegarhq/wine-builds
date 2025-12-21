@@ -138,14 +138,11 @@ jobs:
       run: make install-lib LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
 
     - name: Publish
-      run: |
-        cd $(dirname ${{ env.INSTALL }})
-        XZ_OPT=-9 tar -Jcf ${{ env.NAME }}.tar.xz $(basename ${{ env.INSTALL }})
-
-    - name: Publish
       env:
         GH_TOKEN: ${{ github.token }}
         GH_REPO: ${{ github.repository }}
       run: |
+        cd $(dirname ${{ env.INSTALL }})
+        XZ_OPT=-9 tar -Jcf ${{ env.NAME }}.tar.xz $(basename ${{ env.INSTALL }})
         tag="wine-${{ env.WINE_VERSION }}+$(git rev-parse --short ${{ github.sha }})"
         gh release create --prerelease --generate-notes "$tag" "${{ env.NAME }}.tar.xz"
