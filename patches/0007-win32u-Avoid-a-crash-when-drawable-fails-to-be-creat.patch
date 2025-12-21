@@ -1,4 +1,4 @@
-From 3ace750743a87535c21872208b052eae5e1c6902 Mon Sep 17 00:00:00 2001
+From 16b18837771b17a1fe16b46ed065f8bf69554ea1 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Mon, 1 Dec 2025 18:48:28 +0100
 Subject: [PATCH 07/21] win32u: Avoid a crash when drawable fails to be
@@ -10,7 +10,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/dlls/win32u/opengl.c b/dlls/win32u/opengl.c
-index 57a0c773cbc..8fdc7deaf2f 100644
+index 57a0c77..8fdc7de 100644
 --- a/dlls/win32u/opengl.c
 +++ b/dlls/win32u/opengl.c
 @@ -1656,7 +1656,7 @@ static BOOL context_sync_drawables( struct wgl_context *context, HDC draw_hdc, H

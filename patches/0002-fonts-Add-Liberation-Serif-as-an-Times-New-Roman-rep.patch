@@ -1,4 +1,4 @@
-From 298dd0122180fa27dce7194792e76a360577adb4 Mon Sep 17 00:00:00 2001
+From 5e5f220b01e5b61d07ee20d744422aea34fc28ef Mon Sep 17 00:00:00 2001
 From: Sebastian Lackner <sebastian@fds-team.de>
 Date: Thu, 3 Sep 2015 01:25:14 +0200
 Subject: [PATCH 02/21] fonts: Add Liberation Serif as an Times New Roman
@@ -14,7 +14,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  create mode 100644 fonts/times.ttf
 
 diff --git a/fonts/Makefile.in b/fonts/Makefile.in
-index ab80e7b70f7..94763601824 100644
+index ab80e7b..9476360 100644
 --- a/fonts/Makefile.in
 +++ b/fonts/Makefile.in
 @@ -11,5 +11,6 @@ SOURCES = \
@@ -26,7 +26,7 @@ index ab80e7b70f7..94763601824 100644
  	wingding.sfd
 diff --git a/fonts/times.sfd b/fonts/times.sfd
 new file mode 100644
-index 00000000000..6b4145961f5
+index 0000000..6b41459
 --- /dev/null
 +++ b/fonts/times.sfd
 @@ -0,0 +1,97179 @@

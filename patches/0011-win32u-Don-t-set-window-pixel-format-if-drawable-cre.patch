@@ -1,4 +1,4 @@
-From 308da20a389dbe9f85c69161e3cc5006bbaa6b12 Mon Sep 17 00:00:00 2001
+From b06b4d1b46872d6b74b00824059e2aed1bacb24f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Wed, 17 Dec 2025 13:10:51 +0100
 Subject: [PATCH 11/21] win32u: Don't set window pixel format if drawable
@@ -11,7 +11,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/dlls/win32u/opengl.c b/dlls/win32u/opengl.c
-index 40a8f6809a6..398a984e23e 100644
+index 40a8f68..398a984 100644
 --- a/dlls/win32u/opengl.c
 +++ b/dlls/win32u/opengl.c
 @@ -1511,12 +1511,10 @@ static BOOL win32u_wglSetPixelFormat( HDC hdc, int new_format, const PIXELFORMAT

@@ -1,4 +1,4 @@
-From 0644576f66d84d2f55f287b2be7bd27446a9a763 Mon Sep 17 00:00:00 2001
+From 8171648981ed4275745d67bf725e8b61a88d9223 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Wed, 17 Dec 2025 12:09:44 +0100
 Subject: [PATCH 10/21] win32u: Fix clipping out of vulkan and other process
@@ -17,7 +17,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  7 files changed, 15 insertions(+), 8 deletions(-)
 
 diff --git a/dlls/win32u/message.c b/dlls/win32u/message.c
-index b28ce272099..58eeb046a94 100644
+index b28ce27..58eeb04 100644
 --- a/dlls/win32u/message.c
 +++ b/dlls/win32u/message.c
 @@ -2252,6 +2252,9 @@ static LRESULT handle_internal_message( HWND hwnd, UINT msg, WPARAM wparam, LPAR
@@ -31,7 +31,7 @@ index b28ce272099..58eeb046a94 100644
      {
          TRACKMOUSEEVENT info;
 diff --git a/dlls/win32u/ntuser_private.h b/dlls/win32u/ntuser_private.h
-index 14dcff3ad38..a1fb649e79f 100644
+index 14dcff3..a1fb649 100644
 --- a/dlls/win32u/ntuser_private.h
 +++ b/dlls/win32u/ntuser_private.h
 @@ -72,6 +72,7 @@ typedef struct tagWND
@@ -43,7 +43,7 @@ index 14dcff3ad38..a1fb649e79f 100644
      DWORD_PTR          userdata;      /* User private data */
      DWORD              wExtra[1];     /* Window extra bytes */
 diff --git a/dlls/win32u/opengl.c b/dlls/win32u/opengl.c
-index a2dc8e1be55..40a8f6809a6 100644
+index a2dc8e1..40a8f68 100644
 --- a/dlls/win32u/opengl.c
 +++ b/dlls/win32u/opengl.c
 @@ -1518,7 +1518,7 @@ static BOOL win32u_wglSetPixelFormat( HDC hdc, int new_format, const PIXELFORMAT
@@ -65,7 +65,7 @@ index a2dc8e1be55..40a8f6809a6 100644
  
      return TRUE;
 diff --git a/dlls/win32u/vulkan.c b/dlls/win32u/vulkan.c
-index d0bcffcb458..1063afee187 100644
+index d0bcffc..1063afe 100644
 --- a/dlls/win32u/vulkan.c
 +++ b/dlls/win32u/vulkan.c
 @@ -1532,6 +1532,7 @@ static VkResult win32u_vkCreateWin32SurfaceKHR( VkInstance client_instance, cons
@@ -77,7 +77,7 @@ index d0bcffcb458..1063afee187 100644
      vulkan_object_init( &surface->obj.obj, host_surface );
      surface->obj.instance = instance;
 diff --git a/dlls/win32u/win32u_private.h b/dlls/win32u/win32u_private.h
-index 0b69ccd481d..3dbff57d2e5 100644
+index 0b69ccd..3dbff57 100644
 --- a/dlls/win32u/win32u_private.h
 +++ b/dlls/win32u/win32u_private.h
 @@ -275,7 +275,7 @@ extern BOOL is_window_enabled( HWND hwnd );
@@ -90,7 +90,7 @@ index 0b69ccd481d..3dbff57d2e5 100644
  extern DWORD get_window_long( HWND hwnd, INT offset );
  extern ULONG_PTR get_window_long_ptr( HWND hwnd, INT offset, BOOL ansi );
 diff --git a/dlls/win32u/window.c b/dlls/win32u/window.c
-index 66d270fd3a2..ebd66cc8d29 100644
+index 66d270f..ebd66cc 100644
 --- a/dlls/win32u/window.c
 +++ b/dlls/win32u/window.c
 @@ -1582,16 +1582,18 @@ LONG_PTR WINAPI NtUserSetWindowLongPtr( HWND hwnd, INT offset, LONG_PTR newval,
@@ -126,7 +126,7 @@ index 66d270fd3a2..ebd66cc8d29 100644
          if ((ret = !wine_server_call( req )))
          {
 diff --git a/include/ntuser.h b/include/ntuser.h
-index 78eee8f17d5..3beb6478f6f 100644
+index 78eee8f..3beb647 100644
 --- a/include/ntuser.h
 +++ b/include/ntuser.h
 @@ -649,6 +649,7 @@ enum wine_internal_message

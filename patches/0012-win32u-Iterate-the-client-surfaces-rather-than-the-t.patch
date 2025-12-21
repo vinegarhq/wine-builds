@@ -1,4 +1,4 @@
-From b782a18942f64d7795c53a09a36fb4541ca279df Mon Sep 17 00:00:00 2001
+From aa8e4e0676314d7d8f8beb77891a7b9027f1c35b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Tue, 9 Dec 2025 07:54:10 +0100
 Subject: [PATCH 12/21] win32u: Iterate the client surfaces rather than the
@@ -11,7 +11,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  1 file changed, 2 insertions(+), 14 deletions(-)
 
 diff --git a/dlls/win32u/window.c b/dlls/win32u/window.c
-index ebd66cc8d29..d3c6da11bdb 100644
+index ebd66cc..d3c6da1 100644
 --- a/dlls/win32u/window.c
 +++ b/dlls/win32u/window.c
 @@ -310,7 +310,7 @@ static void update_client_surfaces( HWND hwnd )

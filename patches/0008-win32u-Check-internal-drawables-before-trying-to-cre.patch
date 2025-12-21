@@ -1,4 +1,4 @@
-From 5813039b1b1a52b090c1c017f294c2792f027436 Mon Sep 17 00:00:00 2001
+From 08f7d72d4191e4750ca9d0112e0876c80b6915f5 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Mon, 1 Dec 2025 18:41:22 +0100
 Subject: [PATCH 08/21] win32u: Check internal drawables before trying to
@@ -10,7 +10,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/dlls/win32u/opengl.c b/dlls/win32u/opengl.c
-index 8fdc7deaf2f..70744889d02 100644
+index 8fdc7de..7074488 100644
 --- a/dlls/win32u/opengl.c
 +++ b/dlls/win32u/opengl.c
 @@ -1631,17 +1631,21 @@ static struct opengl_drawable *get_updated_drawable( HDC hdc, int format, struct

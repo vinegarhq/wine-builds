@@ -1,4 +1,4 @@
-From e3c3a65ba25e44bb3e69ddab203457a76cf74964 Mon Sep 17 00:00:00 2001
+From dc0d3b29e2045772e438c8bcec16c4f55f36720e Mon Sep 17 00:00:00 2001
 From: Henri Verbeet <hverbeet@locutus.nl>
 Date: Sat, 6 Dec 2025 20:15:23 +0100
 Subject: [PATCH 15/21] wined3d: Get rid of the "restore_pf" field from struct
@@ -12,7 +12,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  1 file changed, 1 deletion(-)
 
 diff --git a/dlls/wined3d/wined3d_gl.h b/dlls/wined3d/wined3d_gl.h
-index c37b3299f73..c18b3fa8d0a 100644
+index c37b329..c18b3fa 100644
 --- a/dlls/wined3d/wined3d_gl.h
 +++ b/dlls/wined3d/wined3d_gl.h
 @@ -644,7 +644,6 @@ struct wined3d_context_gl

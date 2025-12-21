@@ -1,4 +1,4 @@
-From 711169849a24b94fc9c729e3de29e93c4e50e43d Mon Sep 17 00:00:00 2001
+From 2dbff85fdd251b770f7be5432ecc40888065509e Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Fri, 12 Mar 2021 00:10:49 +0100
 Subject: [PATCH 17/21] winex11: Move Xfixes extension query to process_attach.
@@ -13,7 +13,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  create mode 100644 dlls/winex11.drv/xfixes.h
 
 diff --git a/dlls/winex11.drv/clipboard.c b/dlls/winex11.drv/clipboard.c
-index ee0015639b8..5338958b532 100644
+index ee00156..5338958 100644
 --- a/dlls/winex11.drv/clipboard.c
 +++ b/dlls/winex11.drv/clipboard.c
 @@ -83,6 +83,7 @@
@@ -71,7 +71,7 @@ index ee0015639b8..5338958b532 100644
      TRACE("xfixes succesully initialized\n");
  #else
 diff --git a/dlls/winex11.drv/x11drv.h b/dlls/winex11.drv/x11drv.h
-index 9232988c9c7..f9632f84316 100644
+index 9232988..f9632f8 100644
 --- a/dlls/winex11.drv/x11drv.h
 +++ b/dlls/winex11.drv/x11drv.h
 @@ -470,12 +470,14 @@ extern BOOL use_primary_selection;
@@ -90,7 +90,7 @@ index 9232988c9c7..f9632f84316 100644
  extern Display *clipboard_display;
  
 diff --git a/dlls/winex11.drv/x11drv_main.c b/dlls/winex11.drv/x11drv_main.c
-index 0b8eedadd98..cf0839b6d37 100644
+index 0b8eeda..cf0839b 100644
 --- a/dlls/winex11.drv/x11drv_main.c
 +++ b/dlls/winex11.drv/x11drv_main.c
 @@ -47,6 +47,7 @@
@@ -193,7 +193,7 @@ index 0b8eedadd98..cf0839b6d37 100644
  #endif
 diff --git a/dlls/winex11.drv/xfixes.h b/dlls/winex11.drv/xfixes.h
 new file mode 100644
-index 00000000000..f3beea5efed
+index 0000000..f3beea5
 --- /dev/null
 +++ b/dlls/winex11.drv/xfixes.h
 @@ -0,0 +1,36 @@

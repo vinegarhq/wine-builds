@@ -1,4 +1,4 @@
-From 1310aedc0e31b168bd722ae352847e965acca334 Mon Sep 17 00:00:00 2001
+From 070507f6de7984bc46276d27fef283369ae04617 Mon Sep 17 00:00:00 2001
 From: sewn <sewn@disroot.org>
 Date: Sun, 21 Dec 2025 16:55:13 +0300
 Subject: [PATCH 18/21] winex11: Add Xwayland check
@@ -10,7 +10,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  2 files changed, 4 insertions(+)
 
 diff --git a/dlls/winex11.drv/x11drv.h b/dlls/winex11.drv/x11drv.h
-index f9632f84316..aac70bed192 100644
+index f9632f8..aac70be 100644
 --- a/dlls/winex11.drv/x11drv.h
 +++ b/dlls/winex11.drv/x11drv.h
 @@ -470,6 +470,7 @@ extern BOOL use_primary_selection;
@@ -22,7 +22,7 @@ index f9632f84316..aac70bed192 100644
  extern BOOL managed_mode;
  extern BOOL private_color_map;
 diff --git a/dlls/winex11.drv/x11drv_main.c b/dlls/winex11.drv/x11drv_main.c
-index cf0839b6d37..cc3100d7624 100644
+index cf0839b..b9edf75 100644
 --- a/dlls/winex11.drv/x11drv_main.c
 +++ b/dlls/winex11.drv/x11drv_main.c
 @@ -70,6 +70,7 @@ BOOL usexvidmode = TRUE;
@@ -37,7 +37,7 @@ index cf0839b6d37..cc3100d7624 100644
                     DisplayHeight( display, default_visual.screen ));
      X11DRV_Settings_Init();
  
-+    xwayland = !strcmp(getenv("XDG_SESSION_TYPE")), "wayland");
++    xwayland = !strcmp(getenv("XDG_SESSION_TYPE"), "wayland");
 +
      /* initialize XVidMode */
      X11DRV_XF86VM_Init();

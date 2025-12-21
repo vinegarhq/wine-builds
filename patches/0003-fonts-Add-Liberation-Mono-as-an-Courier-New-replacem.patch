@@ -1,4 +1,4 @@
-From 8a06211c377191eb37048a0003ddf94266bb5a53 Mon Sep 17 00:00:00 2001
+From 9372883f7177fc3eeec5162ea559fdf48996bfb1 Mon Sep 17 00:00:00 2001
 From: Sebastian Lackner <sebastian@fds-team.de>
 Date: Thu, 3 Sep 2015 01:30:37 +0200
 Subject: [PATCH 03/21] fonts: Add Liberation Mono as an Courier New
@@ -14,7 +14,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  create mode 100644 fonts/cour.ttf
 
 diff --git a/fonts/Makefile.in b/fonts/Makefile.in
-index 94763601824..57f087f8a3f 100644
+index 9476360..57f087f 100644
 --- a/fonts/Makefile.in
 +++ b/fonts/Makefile.in
 @@ -1,5 +1,6 @@
@@ -26,7 +26,7 @@ index 94763601824..57f087f8a3f 100644
  	fixedsys_jp.sfd \
 diff --git a/fonts/cour.sfd b/fonts/cour.sfd
 new file mode 100644
-index 00000000000..88d988a8caa
+index 0000000..88d988a
 --- /dev/null
 +++ b/fonts/cour.sfd
 @@ -0,0 +1,67696 @@

@@ -1,4 +1,4 @@
-From 4710bbabefc432d3f6b6e89576269a8adda778d0 Mon Sep 17 00:00:00 2001
+From 275b3178a61db6a2a0912918b45e2f9c7b4d4ec6 Mon Sep 17 00:00:00 2001
 From: Henri Verbeet <hverbeet@locutus.nl>
 Date: Sat, 6 Dec 2025 20:01:59 +0100
 Subject: [PATCH 14/21] wined3d: Do not set "context_gl->needs_set" in
@@ -29,7 +29,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  1 file changed, 2 deletions(-)
 
 diff --git a/dlls/wined3d/context_gl.c b/dlls/wined3d/context_gl.c
-index 82e44161598..2236c78652b 100644
+index 82e4416..2236c78 100644
 --- a/dlls/wined3d/context_gl.c
 +++ b/dlls/wined3d/context_gl.c
 @@ -1602,8 +1602,6 @@ void wined3d_context_gl_release(struct wined3d_context_gl *context_gl)

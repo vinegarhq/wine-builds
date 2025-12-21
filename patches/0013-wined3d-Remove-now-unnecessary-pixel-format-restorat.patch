@@ -1,4 +1,4 @@
-From fa66293183a042e221127929337ad9d8ac40afea Mon Sep 17 00:00:00 2001
+From 494aed2c927d9d716a7e887693e155ca162812ad Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Tue, 2 Dec 2025 12:32:28 +0100
 Subject: [PATCH 13/21] wined3d: Remove now unnecessary pixel format
@@ -18,7 +18,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  2 files changed, 2 insertions(+), 43 deletions(-)
 
 diff --git a/dlls/wined3d/context_gl.c b/dlls/wined3d/context_gl.c
-index ac1b9370fc1..82e44161598 100644
+index ac1b937..82e4416 100644
 --- a/dlls/wined3d/context_gl.c
 +++ b/dlls/wined3d/context_gl.c
 @@ -1162,38 +1162,6 @@ void wined3d_context_gl_texture_update(struct wined3d_context_gl *context_gl,
@@ -101,7 +101,7 @@ index ac1b9370fc1..82e44161598 100644
          {
              TRACE("Restoring GL context %p on device context %p.\n", context_gl->restore_ctx, context_gl->restore_dc);
 diff --git a/dlls/wined3d/wined3d_gl.h b/dlls/wined3d/wined3d_gl.h
-index ed537686007..c37b3299f73 100644
+index ed53768..c37b329 100644
 --- a/dlls/wined3d/wined3d_gl.h
 +++ b/dlls/wined3d/wined3d_gl.h
 @@ -645,7 +645,6 @@ struct wined3d_context_gl

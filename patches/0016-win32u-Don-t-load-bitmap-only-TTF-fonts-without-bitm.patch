@@ -1,4 +1,4 @@
-From fa4a7b9a5babf29795f823f943a67cb98e145443 Mon Sep 17 00:00:00 2001
+From 833cc4362512698b70d3ac97f85d7648bf9c6daf Mon Sep 17 00:00:00 2001
 From: Paul Gofman <pgofman@codeweavers.com>
 Date: Fri, 8 Jul 2022 20:01:17 -0500
 Subject: [PATCH 16/21] win32u: Don't load bitmap only TTF fonts without bitmap
@@ -10,7 +10,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  1 file changed, 18 insertions(+), 1 deletion(-)
 
 diff --git a/dlls/win32u/freetype.c b/dlls/win32u/freetype.c
-index aeae190bc46..99f5be9c9bb 100644
+index aeae190..99f5be9 100644
 --- a/dlls/win32u/freetype.c
 +++ b/dlls/win32u/freetype.c
 @@ -190,6 +190,8 @@ MAKE_FUNCPTR(FcStrSetMember);
