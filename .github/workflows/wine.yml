@@ -9,33 +9,34 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: 'Install dependencies'
+    - name: Install dependencies
       run: |
         echo "NAME=vinegarhq-wine-${{ env.WINE_VERSION }}" >> $GITHUB_ENV
 
         sudo wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.18/include/uapi/linux/ntsync.h
         sudo wget -O /usr/include/linux/userfaultfd.h https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.18/include/uapi/linux/userfaultfd.h
         
-    - name: 'Checkout Repository'
+    - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: 'Fetch sources'
+    - name: Fetch sources
       run: |
         git clone https://gitlab.winehq.org/wine/wine.git --depth 1 \
           --branch wine-${{ env.WINE_VERSION }}
         git clone https://gitlab.winehq.org/wine/wine-staging.git --depth 1 \
           --branch v${{ env.WINE_VERSION }}
 
-    - name: 'Apply patches'
+    - name: Apply patches
       run: |
         echo "INSTALL=${{ github.workspace }}/${{ env.NAME }}" >> $GITHUB_ENV
         
         wine-staging/staging/patchinstall.py --destdir=wine fonts-Missing_Fonts
         for patch in patches/*.patch; do
+          echo "::notice file=$patch::Patching Wine"
           patch -d wine -sNp1 < "$patch"
         done
 
-    - name: 'Install build dependencies'
+    - name: Install build dependencies
       run: |
         echo "PATH=/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH" >> $GITHUB_ENV
 
@@ -68,10 +69,10 @@ jobs:
           libxrender-dev \
           mingw-w64
 
-    - name: 'Configure ccache'
+    - name: Configure ccache
       uses: hendrikmuhs/ccache-action@v1.2
 
-    - name: 'Configure Wine'
+    - name: Configure Wine
       working-directory: wine
       run: |
         export CFLAGS='-O2 -ftree-vectorize -pipe -march=x86-64-v2 -mpclmul -msse4.2 -floop-nest-optimize -fgraphite-identity'
@@ -131,21 +132,23 @@ jobs:
           --with-xshape \
           --with-xshm
 
-    - name: 'Build Wine'
+    - name: Build Wine
       working-directory: wine
       run: make -j$(($(nproc) + 1))
 
-    - name: 'Install Wine'
+    - name: Install Wine
       working-directory: wine
       run: make install-lib LDCONFIG=/bin/true UPDATE_DESKTOP_DATABASE=/bin/true
 
-    - name: Make artifacts
+    - name: Publish
       run: |
         cd $(dirname ${{ env.INSTALL }})
         XZ_OPT=-9 tar -Jcf ${{ env.NAME }}.tar.xz $(basename ${{ env.INSTALL }})
 
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.NAME }}
-        path: ${{ env.NAME }}.tar.xz
+    - name: Publish
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
+      run: |
+        tag="wine-${{ env.WINE_VERSION }}+$(git rev-parse --short ${{ github.sha }})"
+        gh release create --prerelease --generate-notes "$tag" "${{ env.NAME }}.tar.xz"
