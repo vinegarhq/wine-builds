@@ -1,7 +1,7 @@
 name: Build Wine
 on: [ push, pull_request ]
 permissions:
-  contents: read
+  contents: write
   pull-requests: read
 env:
   WINE_VERSION: "10.20"
