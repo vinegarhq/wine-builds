@@ -97,7 +97,7 @@ jobs:
           eggroll/patches/proton/add-envvar-to-gate-media-converter.patch \
           eggroll/patches/proton/0001-ntdll-Downgrade-using-kernel-write-watches-from-MESS.patch \
           eggroll/patches/proton/0001-win32u-add-env-switch-to-disable-wm-decorations.patch \
-          *.patch
+          patches/proton/*.patch
         do
           echo $p
           patch -d wine -sNp1 < $p
