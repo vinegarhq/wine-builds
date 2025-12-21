@@ -1,0 +1,35 @@
+From 1365c65f2a0ac0643c5d4c98a1f0c938bead6f5a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
+Date: Tue, 2 Dec 2025 13:20:10 +0100
+Subject: [PATCH 06/20] win32u: Update the window client surface even with no
+ children.
+
+Based on a patch from brett.didemus on Bugzilla, thanks!
+
+Fixes: 257364eb5f671b2fd63507373b0427b519dfa71d
+Signed-off-by: sewn <sewn@disroot.org>
+---
+ dlls/win32u/window.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/dlls/win32u/window.c b/dlls/win32u/window.c
+index 4c52bc21f2a..66d270fd3a2 100644
+--- a/dlls/win32u/window.c
++++ b/dlls/win32u/window.c
+@@ -2136,11 +2136,11 @@ static void update_window_client_surfaces( HWND hwnd )
+     HWND *children;
+     int i;
+ 
++    update_client_surfaces( hwnd );
++
+     if (!(children = list_window_children( hwnd ))) return;
+     for (i = 0; children[i]; i++) update_window_client_surfaces( children[i] );
+     free( children );
+-
+-    update_client_surfaces( hwnd );
+ }
+ 
+ static HICON get_icon_info( HICON icon, ICONINFO *ii )
+-- 
+2.52.0
+
