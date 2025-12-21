@@ -1,7 +1,7 @@
-From 99fa77295cae262ce4911f5b53fdeb34ae8ebcf6 Mon Sep 17 00:00:00 2001
+From e3c3a65ba25e44bb3e69ddab203457a76cf74964 Mon Sep 17 00:00:00 2001
 From: Henri Verbeet <hverbeet@locutus.nl>
 Date: Sat, 6 Dec 2025 20:15:23 +0100
-Subject: [PATCH 15/20] wined3d: Get rid of the "restore_pf" field from struct
+Subject: [PATCH 15/21] wined3d: Get rid of the "restore_pf" field from struct
  wined3d_context_gl.
 
 Its usage was removed in commit ce44dd0ba41b88f6b8eb626863c3358b75aca66c.

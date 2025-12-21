@@ -1,7 +1,7 @@
-From 8b0d7cdf38447057317d01a16436c9a8e512eb05 Mon Sep 17 00:00:00 2001
+From 3ace750743a87535c21872208b052eae5e1c6902 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Mon, 1 Dec 2025 18:48:28 +0100
-Subject: [PATCH 07/20] win32u: Avoid a crash when drawable fails to be
+Subject: [PATCH 07/21] win32u: Avoid a crash when drawable fails to be
  created.
 
 Signed-off-by: sewn <sewn@disroot.org>

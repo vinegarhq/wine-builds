@@ -1,7 +1,7 @@
-From 2b3c84be9cd42902cfdcde3390823f1aad4aaf7e Mon Sep 17 00:00:00 2001
+From 5813039b1b1a52b090c1c017f294c2792f027436 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Mon, 1 Dec 2025 18:41:22 +0100
-Subject: [PATCH 08/20] win32u: Check internal drawables before trying to
+Subject: [PATCH 08/21] win32u: Check internal drawables before trying to
  create new ones.
 
 Signed-off-by: sewn <sewn@disroot.org>

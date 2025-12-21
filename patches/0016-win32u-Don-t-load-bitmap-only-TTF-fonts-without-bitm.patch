@@ -1,7 +1,7 @@
-From 1b5d256c82776de7bad84247efca03f40fce1af8 Mon Sep 17 00:00:00 2001
+From fa4a7b9a5babf29795f823f943a67cb98e145443 Mon Sep 17 00:00:00 2001
 From: Paul Gofman <pgofman@codeweavers.com>
 Date: Fri, 8 Jul 2022 20:01:17 -0500
-Subject: [PATCH 16/20] win32u: Don't load bitmap only TTF fonts without bitmap
+Subject: [PATCH 16/21] win32u: Don't load bitmap only TTF fonts without bitmap
  table.
 
 Signed-off-by: sewn <sewn@disroot.org>

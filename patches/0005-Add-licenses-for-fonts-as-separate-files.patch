@@ -1,7 +1,7 @@
-From 26f2fca643368068b83fe04f66e13fd808a04921 Mon Sep 17 00:00:00 2001
+From 6e3767205c167be36250aaf8cf7b2dfd065b527c Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Michael=20M=C3=BCller?= <michael@fds-team.de>
 Date: Sat, 20 Dec 2014 23:10:38 +0100
-Subject: [PATCH 05/20] Add licenses for fonts as separate files.
+Subject: [PATCH 05/21] Add licenses for fonts as separate files.
 
 Signed-off-by: sewn <sewn@disroot.org>
 ---

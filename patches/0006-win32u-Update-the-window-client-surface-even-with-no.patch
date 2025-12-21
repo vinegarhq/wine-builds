@@ -1,7 +1,7 @@
-From 1365c65f2a0ac0643c5d4c98a1f0c938bead6f5a Mon Sep 17 00:00:00 2001
+From a1c1a1cedea3eb4c138844784d1f8897566759d7 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Tue, 2 Dec 2025 13:20:10 +0100
-Subject: [PATCH 06/20] win32u: Update the window client surface even with no
+Subject: [PATCH 06/21] win32u: Update the window client surface even with no
  children.
 
 Based on a patch from brett.didemus on Bugzilla, thanks!
