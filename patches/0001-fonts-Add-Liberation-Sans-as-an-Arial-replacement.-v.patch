@@ -1,7 +1,7 @@
-From 75f086e3cb0cc4cf299746496a8af4dccfebcde7 Mon Sep 17 00:00:00 2001
+From a3186aa5f02d39f717d4077ca97aa978b1f047c3 Mon Sep 17 00:00:00 2001
 From: Torsten Kurbad <t.kurbad@iwm-kmrc.de>
 Date: Tue, 22 Jul 2014 18:11:41 -0600
-Subject: [PATCH 01/27] fonts: Add Liberation Sans as an Arial replacement.
+Subject: [PATCH 01/33] fonts: Add Liberation Sans as an Arial replacement.
  (v2)
 
 Changes in v2 by Sebastian Lackner <sebastian@fds-team.de>:

@@ -1,7 +1,7 @@
-From 1d36349768ad79898f2364f0aeaa1b98d9afcadb Mon Sep 17 00:00:00 2001
+From 1deda9c6c24d3f12215b2881b860dee21dcad673 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Tue, 2 Dec 2025 12:32:28 +0100
-Subject: [PATCH 14/27] wined3d: Remove now unnecessary pixel format
+Subject: [PATCH 14/33] wined3d: Remove now unnecessary pixel format
  restoration.
 
 wglSetPixelFormatWINE now sets the internal pixel format privately on

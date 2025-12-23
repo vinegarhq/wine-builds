@@ -1,7 +1,7 @@
-From 6593c9eceb8821d269d18d78bae8d0e794d6c394 Mon Sep 17 00:00:00 2001
+From a27c7c9d8cc86ec62cee874fbeb2cc4bbbfb3e0e Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Fri, 12 Dec 2025 20:03:01 +0100
-Subject: [PATCH 10/27] win32u: Update window state after setting internal
+Subject: [PATCH 10/33] win32u: Update window state after setting internal
  pixel format.
 
 We need to inform wineserver that the window has a drawable now and

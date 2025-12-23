@@ -1,7 +1,7 @@
-From 27a599ee59244de3782ba25cb0b888a8a57c3a53 Mon Sep 17 00:00:00 2001
+From ffd761bba1d298b77d11b6befa6b3c1af2c3c66a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Thu, 18 Dec 2025 20:40:04 +0100
-Subject: [PATCH 24/27] wined3d: Update the context DC from its swapchain if it
+Subject: [PATCH 24/33] wined3d: Update the context DC from its swapchain if it
  changed.
 
 The context keeps a weak pointer to the swapchain, and the swapchain

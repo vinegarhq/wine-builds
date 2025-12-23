@@ -1,0 +1,32 @@
+From fbe0b99b7eaf64f98d629f5c3639f3c3e06d691a Mon Sep 17 00:00:00 2001
+From: Elizabeth Figura <zfigura@codeweavers.com>
+Date: Sun, 21 Dec 2025 21:02:06 -0600
+Subject: [PATCH 28/33] wined3d: Add some missing states to
+ wined3d_stateblock_invalidate_initial_states().
+
+---
+ dlls/wined3d/stateblock.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/dlls/wined3d/stateblock.c b/dlls/wined3d/stateblock.c
+index aa3a710834a..efce0f62d11 100644
+--- a/dlls/wined3d/stateblock.c
++++ b/dlls/wined3d/stateblock.c
+@@ -2503,6 +2503,14 @@ static void wined3d_stateblock_invalidate_initial_states(struct wined3d_stateblo
+     stateblock->changed.fog_constants = 1;
+     wined3d_bitmap_set_bits(stateblock->changed.renderState, WINED3D_RS_POINTSIZE_MAX, 1);
+     wined3d_bitmap_set_bits(stateblock->changed.renderState, WINED3D_RS_POINTSIZE_MIN, 1);
++    stateblock->changed.extra_vs_args = 1;
++    stateblock->changed.extra_ps_args = 1;
++    stateblock->changed.rasterizer_state = 1;
++    /* These force setting depth/stencil, and blend state.
++     * FIXME: These should probably be made into flags in wined3d_saved_states
++     * like the rest. */
++    wined3d_bitmap_set_bits(stateblock->changed.renderState, WINED3D_RS_BLENDOP, 1);
++    wined3d_bitmap_set_bits(stateblock->changed.renderState, WINED3D_RS_ZENABLE, 1);
+ }
+ 
+ static HRESULT stateblock_init(struct wined3d_stateblock *stateblock, const struct wined3d_stateblock *device_state,
+-- 
+2.52.0
+
