@@ -1,7 +1,7 @@
-From fb38d1658320dee8e82f0f624e031e69ab4589db Mon Sep 17 00:00:00 2001
+From 4b1c0bbd3e9a0b2ec1a15596fa246d95ee96f816 Mon Sep 17 00:00:00 2001
 From: Elizabeth Figura <zfigura@codeweavers.com>
 Date: Sun, 21 Dec 2025 19:39:02 -0600
-Subject: [PATCH 32/33] wined3d: Invalidate fog constants only when the VS is
+Subject: [PATCH 32/34] wined3d: Invalidate fog constants only when the VS is
  toggled.
 
 Other states can affect ffp_vs_settings but not fog constants.

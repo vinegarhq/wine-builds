@@ -1,7 +1,7 @@
-From fbe0b99b7eaf64f98d629f5c3639f3c3e06d691a Mon Sep 17 00:00:00 2001
+From 13731d7cdf21a4ca3e9bc322290f4c85f83ef471 Mon Sep 17 00:00:00 2001
 From: Elizabeth Figura <zfigura@codeweavers.com>
 Date: Sun, 21 Dec 2025 21:02:06 -0600
-Subject: [PATCH 28/33] wined3d: Add some missing states to
+Subject: [PATCH 28/34] wined3d: Add some missing states to
  wined3d_stateblock_invalidate_initial_states().
 
 ---

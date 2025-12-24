@@ -1,7 +1,7 @@
-From fb5ac8fb3bac21d73d3e7097924acaecd0bed459 Mon Sep 17 00:00:00 2001
+From 0cf66e871bfd6d51b63b34c7a4e1b4c3851ae494 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Tue, 9 Dec 2025 07:54:10 +0100
-Subject: [PATCH 13/33] win32u: Iterate the client surfaces rather than the
+Subject: [PATCH 13/34] win32u: Iterate the client surfaces rather than the
  toplevel window tree.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59089

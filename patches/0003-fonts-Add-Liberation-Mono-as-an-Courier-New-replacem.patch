@@ -1,7 +1,7 @@
-From 5e250f307b856e01452ea269f9bb3e667e44fd30 Mon Sep 17 00:00:00 2001
+From 6e51e05f7249987f78d863970a8fc0be1d56bc65 Mon Sep 17 00:00:00 2001
 From: Sebastian Lackner <sebastian@fds-team.de>
 Date: Thu, 3 Sep 2015 01:30:37 +0200
-Subject: [PATCH 03/33] fonts: Add Liberation Mono as an Courier New
+Subject: [PATCH 03/34] fonts: Add Liberation Mono as an Courier New
  replacement.
 
 Signed-off-by: sewn <sewn@disroot.org>

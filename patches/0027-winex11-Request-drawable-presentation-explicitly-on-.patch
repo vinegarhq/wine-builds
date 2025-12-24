@@ -1,7 +1,7 @@
-From 26c58780c0c9fc75930f3428eb9ac9bf47578c93 Mon Sep 17 00:00:00 2001
+From ec5dbaa8d17775f26e88d8642c3a67801426ab0a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Sun, 21 Dec 2025 00:23:28 +0100
-Subject: [PATCH 27/33] winex11: Request drawable presentation explicitly on
+Subject: [PATCH 27/34] winex11: Request drawable presentation explicitly on
  flush.
 
 Instead of doing for every flush, which might happen more often than
