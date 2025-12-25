@@ -1,7 +1,7 @@
-From c9e41950c0346276aa6d6689f1a948aff1b1a611 Mon Sep 17 00:00:00 2001
+From f7b6fe7ad937191f0cc774243a100cee2939ac0c Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Fri, 8 Sep 2023 14:24:11 +0200
-Subject: [PATCH 36/48] winex11: Always ignore MotionNotify event after
+Subject: [PATCH 36/49] winex11: Always ignore MotionNotify event after
  SetCursorPos.
 
 Signed-off-by: sewn <sewn@disroot.org>
@@ -10,7 +10,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/dlls/winex11.drv/mouse.c b/dlls/winex11.drv/mouse.c
-index 1a8a5e42ef4..9ec90294672 100644
+index 1a8a5e4..9ec9029 100644
 --- a/dlls/winex11.drv/mouse.c
 +++ b/dlls/winex11.drv/mouse.c
 @@ -1607,7 +1607,7 @@ BOOL X11DRV_MotionNotify( HWND hwnd, XEvent *xev )

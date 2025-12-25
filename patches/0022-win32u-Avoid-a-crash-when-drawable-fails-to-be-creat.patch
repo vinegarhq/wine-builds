@@ -1,7 +1,7 @@
-From 93c0a39af2e0ed7ef0c5767b31efe4f859754067 Mon Sep 17 00:00:00 2001
+From ddf3da49b3356c0086419a4763e516c12ce95783 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Mon, 1 Dec 2025 18:48:28 +0100
-Subject: [PATCH 22/48] win32u: Avoid a crash when drawable fails to be
+Subject: [PATCH 22/49] win32u: Avoid a crash when drawable fails to be
  created.
 
 Signed-off-by: sewn <sewn@disroot.org>
@@ -10,7 +10,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/dlls/win32u/opengl.c b/dlls/win32u/opengl.c
-index 57a0c773cbc..8fdc7deaf2f 100644
+index 57a0c77..8fdc7de 100644
 --- a/dlls/win32u/opengl.c
 +++ b/dlls/win32u/opengl.c
 @@ -1656,7 +1656,7 @@ static BOOL context_sync_drawables( struct wgl_context *context, HDC draw_hdc, H

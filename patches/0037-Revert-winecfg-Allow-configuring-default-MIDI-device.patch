@@ -1,7 +1,7 @@
-From 4acab98966a012b6f94bc6ef613adc545ec31a0e Mon Sep 17 00:00:00 2001
+From e04bdf8ffe69e8d932e7349a30283ba9a8a47f42 Mon Sep 17 00:00:00 2001
 From: sewn <sewn@disroot.org>
 Date: Mon, 13 Oct 2025 18:39:54 +0300
-Subject: [PATCH 37/48] Revert "winecfg: Allow configuring default MIDI
+Subject: [PATCH 37/49] Revert "winecfg: Allow configuring default MIDI
  device."
 
 This reverts commit ac85c06fc5955bea0cc55dca4d96270d4caf43b9.
@@ -64,7 +64,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  53 files changed, 1190 insertions(+), 1528 deletions(-)
 
 diff --git a/po/ar.po b/po/ar.po
-index bcb04638d7c..abb03180845 100644
+index bcb0463..abb0318 100644
 --- a/po/ar.po
 +++ b/po/ar.po
 @@ -717,7 +717,7 @@ msgid "Font St&yle:"
@@ -217,7 +217,7 @@ index bcb04638d7c..abb03180845 100644
  msgstr "موص&ول إلى:"
  
 diff --git a/po/ast.po b/po/ast.po
-index 763b66ef365..c171d659f5a 100644
+index 763b66e..c171d65 100644
 --- a/po/ast.po
 +++ b/po/ast.po
 @@ -712,7 +712,7 @@ msgid "Font St&yle:"
@@ -366,7 +366,7 @@ index 763b66ef365..c171d659f5a 100644
  msgstr "&Enllaciar a:"
  
 diff --git a/po/bg.po b/po/bg.po
-index 1b274c62b7c..699cf947c45 100644
+index 1b274c6..699cf94 100644
 --- a/po/bg.po
 +++ b/po/bg.po
 @@ -723,7 +723,7 @@ msgid "Font St&yle:"
@@ -518,7 +518,7 @@ index 1b274c62b7c..699cf947c45 100644
  msgstr "Връзка към:"
  
 diff --git a/po/ca.po b/po/ca.po
-index 36d27a48224..26c2834d5d1 100644
+index 36d27a4..26c2834 100644
 --- a/po/ca.po
 +++ b/po/ca.po
 @@ -715,7 +715,7 @@ msgid "Font St&yle:"
@@ -667,7 +667,7 @@ index 36d27a48224..26c2834d5d1 100644
  msgstr "Enlla&ça a:"
  
 diff --git a/po/cs.po b/po/cs.po
-index 3efdd85aa5b..f449f29066c 100644
+index 3efdd85..f449f29 100644
 --- a/po/cs.po
 +++ b/po/cs.po
 @@ -723,7 +723,7 @@ msgid "Font St&yle:"
@@ -818,7 +818,7 @@ index 3efdd85aa5b..f449f29066c 100644
  msgstr "&Odkaz do:"
  
 diff --git a/po/da.po b/po/da.po
-index e17cf5536c9..1fd0e26ae86 100644
+index e17cf55..1fd0e26 100644
 --- a/po/da.po
 +++ b/po/da.po
 @@ -730,7 +730,7 @@ msgid "Font St&yle:"
@@ -971,7 +971,7 @@ index e17cf5536c9..1fd0e26ae86 100644
  msgstr "&Link til:"
  
 diff --git a/po/de.po b/po/de.po
-index c1b1df5884b..65626ded565 100644
+index c1b1df5..65626de 100644
 --- a/po/de.po
 +++ b/po/de.po
 @@ -714,7 +714,7 @@ msgid "Font St&yle:"
@@ -1124,7 +1124,7 @@ index c1b1df5884b..65626ded565 100644
  msgstr "&Verknüpfen mit:"
  
 diff --git a/po/el.po b/po/el.po
-index 35241bdf842..a50d2904827 100644
+index 35241bd..a50d290 100644
 --- a/po/el.po
 +++ b/po/el.po
 @@ -701,7 +701,7 @@ msgid "Font St&yle:"
@@ -1273,7 +1273,7 @@ index 35241bdf842..a50d2904827 100644
  msgstr ""
  
 diff --git a/po/en.po b/po/en.po
-index 5e1cd193f09..de4ae633b44 100644
+index 5e1cd19..de4ae63 100644
 --- a/po/en.po
 +++ b/po/en.po
 @@ -707,7 +707,7 @@ msgid "Font St&yle:"
@@ -1420,7 +1420,7 @@ index 5e1cd193f09..de4ae633b44 100644
  msgstr "&Link to:"
  
 diff --git a/po/en_US.po b/po/en_US.po
-index e36cd1780d3..016c42d17d2 100644
+index e36cd17..016c42d 100644
 --- a/po/en_US.po
 +++ b/po/en_US.po
 @@ -707,7 +707,7 @@ msgid "Font St&yle:"
@@ -1567,7 +1567,7 @@ index e36cd1780d3..016c42d17d2 100644
  msgstr "&Link to:"
  
 diff --git a/po/eo.po b/po/eo.po
-index 67c610588fa..a432e38c571 100644
+index 67c6105..a432e38 100644
 --- a/po/eo.po
 +++ b/po/eo.po
 @@ -712,7 +712,7 @@ msgid "Font St&yle:"
@@ -1720,7 +1720,7 @@ index 67c610588fa..a432e38c571 100644
  msgstr ""
  
 diff --git a/po/es.po b/po/es.po
-index baa71bd46e8..3f70f663339 100644
+index baa71bd..3f70f66 100644
 --- a/po/es.po
 +++ b/po/es.po
 @@ -712,7 +712,7 @@ msgid "Font St&yle:"
@@ -1871,7 +1871,7 @@ index baa71bd46e8..3f70f663339 100644
  msgstr "E&nlace a:"
  
 diff --git a/po/fa.po b/po/fa.po
-index 230ed17556d..b2c3b764946 100644
+index 230ed17..b2c3b76 100644
 --- a/po/fa.po
 +++ b/po/fa.po
 @@ -710,7 +710,7 @@ msgid "Font St&yle:"
@@ -2022,7 +2022,7 @@ index 230ed17556d..b2c3b764946 100644
  msgstr ""
  
 diff --git a/po/fi.po b/po/fi.po
-index 27e0afc0af1..0ec74eb7ec3 100644
+index 27e0afc..0ec74eb 100644
 --- a/po/fi.po
 +++ b/po/fi.po
 @@ -705,7 +705,7 @@ msgid "Font St&yle:"
@@ -2169,7 +2169,7 @@ index 27e0afc0af1..0ec74eb7ec3 100644
  msgstr "&Linkitä kohteeseen:"
  
 diff --git a/po/fr.po b/po/fr.po
-index c93fb601869..7e7d9826c98 100644
+index c93fb60..7e7d982 100644
 --- a/po/fr.po
 +++ b/po/fr.po
 @@ -715,7 +715,7 @@ msgid "Font St&yle:"
@@ -2322,7 +2322,7 @@ index c93fb601869..7e7d9826c98 100644
  msgstr "&Lier à :"
  
 diff --git a/po/he.po b/po/he.po
-index dfac2551951..5b7e502256b 100644
+index dfac255..5b7e502 100644
 --- a/po/he.po
 +++ b/po/he.po
 @@ -724,7 +724,7 @@ msgid "Font St&yle:"
@@ -2476,7 +2476,7 @@ index dfac2551951..5b7e502256b 100644
  msgid "&Link to:"
  msgstr "קישורים אל"
 diff --git a/po/hi.po b/po/hi.po
-index 623294008ba..0fd60913a1e 100644
+index 6232940..0fd6091 100644
 --- a/po/hi.po
 +++ b/po/hi.po
 @@ -693,7 +693,7 @@ msgid "Font St&yle:"
@@ -2622,7 +2622,7 @@ index 623294008ba..0fd60913a1e 100644
  msgstr ""
  
 diff --git a/po/hr.po b/po/hr.po
-index 2180e832dca..e3915a4ce00 100644
+index 2180e83..e3915a4 100644
 --- a/po/hr.po
 +++ b/po/hr.po
 @@ -720,7 +720,7 @@ msgid "Font St&yle:"
@@ -2775,7 +2775,7 @@ index 2180e832dca..e3915a4ce00 100644
  msgstr "&Veza do:"
  
 diff --git a/po/hu.po b/po/hu.po
-index 9102d92c1bd..ad546d07eca 100644
+index 9102d92..ad546d0 100644
 --- a/po/hu.po
 +++ b/po/hu.po
 @@ -734,7 +734,7 @@ msgid "Font St&yle:"
@@ -2928,7 +2928,7 @@ index 9102d92c1bd..ad546d07eca 100644
  msgstr "Mappa &útvonal:"
  
 diff --git a/po/it.po b/po/it.po
-index b168d967d7b..7574f0df204 100644
+index b168d96..7574f0d 100644
 --- a/po/it.po
 +++ b/po/it.po
 @@ -740,7 +740,7 @@ msgid "Font St&yle:"
@@ -3081,7 +3081,7 @@ index b168d967d7b..7574f0df204 100644
  msgstr "&Collega a:"
  
 diff --git a/po/ja.po b/po/ja.po
-index fd5e6578bba..9d8b0dc4baf 100644
+index fd5e657..9d8b0dc 100644
 --- a/po/ja.po
 +++ b/po/ja.po
 @@ -710,7 +710,7 @@ msgid "Font St&yle:"
@@ -3230,7 +3230,7 @@ index fd5e6578bba..9d8b0dc4baf 100644
  msgstr "リンク先(&L):"
  
 diff --git a/po/ka.po b/po/ka.po
-index b055db28553..e39f5f6cc3c 100644
+index b055db2..e39f5f6 100644
 --- a/po/ka.po
 +++ b/po/ka.po
 @@ -712,7 +712,7 @@ msgid "Font St&yle:"
@@ -3379,7 +3379,7 @@ index b055db28553..e39f5f6cc3c 100644
  msgstr "&მიბმის სამიზნე:"
  
 diff --git a/po/ko.po b/po/ko.po
-index 8974bf5d33c..94c08de1318 100644
+index 8974bf5..94c08de 100644
 --- a/po/ko.po
 +++ b/po/ko.po
 @@ -708,7 +708,7 @@ msgid "Font St&yle:"
@@ -3528,7 +3528,7 @@ index 8974bf5d33c..94c08de1318 100644
  msgstr "연결 대상(&L):"
  
 diff --git a/po/lt.po b/po/lt.po
-index c1e520c3902..a8efbc591a0 100644
+index c1e520c..a8efbc5 100644
 --- a/po/lt.po
 +++ b/po/lt.po
 @@ -711,7 +711,7 @@ msgid "Font St&yle:"
@@ -3672,7 +3672,7 @@ index c1e520c3902..a8efbc591a0 100644
  msgstr "S&usieti su:"
  
 diff --git a/po/ml.po b/po/ml.po
-index 9a47f2e54a0..4676f1ff8b7 100644
+index 9a47f2e..4676f1f 100644
 --- a/po/ml.po
 +++ b/po/ml.po
 @@ -697,7 +697,7 @@ msgid "Font St&yle:"
@@ -3818,7 +3818,7 @@ index 9a47f2e54a0..4676f1ff8b7 100644
  msgstr ""
  
 diff --git a/po/nb_NO.po b/po/nb_NO.po
-index c6c52a98086..7cf1799345c 100644
+index c6c52a9..7cf1799 100644
 --- a/po/nb_NO.po
 +++ b/po/nb_NO.po
 @@ -711,7 +711,7 @@ msgid "Font St&yle:"
@@ -3971,7 +3971,7 @@ index c6c52a98086..7cf1799345c 100644
  msgstr "Pek ti&l:"
  
 diff --git a/po/nl.po b/po/nl.po
-index 0b90ddd4353..0aa2b75ce6f 100644
+index 0b90ddd..0aa2b75 100644
 --- a/po/nl.po
 +++ b/po/nl.po
 @@ -710,7 +710,7 @@ msgid "Font St&yle:"
@@ -4120,7 +4120,7 @@ index 0b90ddd4353..0aa2b75ce6f 100644
  msgstr "Doelmap:"
  
 diff --git a/po/or.po b/po/or.po
-index ee2f58e3a0c..73722890c76 100644
+index ee2f58e..7372289 100644
 --- a/po/or.po
 +++ b/po/or.po
 @@ -693,7 +693,7 @@ msgid "Font St&yle:"
@@ -4266,7 +4266,7 @@ index ee2f58e3a0c..73722890c76 100644
  msgstr ""
  
 diff --git a/po/pa.po b/po/pa.po
-index b4cb45bc7b3..556cfda0a57 100644
+index b4cb45b..556cfda 100644
 --- a/po/pa.po
 +++ b/po/pa.po
 @@ -693,7 +693,7 @@ msgid "Font St&yle:"
@@ -4412,7 +4412,7 @@ index b4cb45bc7b3..556cfda0a57 100644
  msgstr ""
  
 diff --git a/po/pl.po b/po/pl.po
-index afed00338bc..94126eaac3b 100644
+index afed003..94126ea 100644
 --- a/po/pl.po
 +++ b/po/pl.po
 @@ -718,7 +718,7 @@ msgid "Font St&yle:"
@@ -4559,7 +4559,7 @@ index afed00338bc..94126eaac3b 100644
  msgstr "Dowiązany do:"
  
 diff --git a/po/pt_BR.po b/po/pt_BR.po
-index 6a0fc7e095c..2e89a643e9a 100644
+index 6a0fc7e..2e89a64 100644
 --- a/po/pt_BR.po
 +++ b/po/pt_BR.po
 @@ -712,7 +712,7 @@ msgid "Font St&yle:"
@@ -4712,7 +4712,7 @@ index 6a0fc7e095c..2e89a643e9a 100644
  msgstr "&Atalho para:"
  
 diff --git a/po/pt_PT.po b/po/pt_PT.po
-index 2da934050b9..d0d9a24fea5 100644
+index 2da9340..d0d9a24 100644
 --- a/po/pt_PT.po
 +++ b/po/pt_PT.po
 @@ -734,7 +734,7 @@ msgid "Font St&yle:"
@@ -4863,7 +4863,7 @@ index 2da934050b9..d0d9a24fea5 100644
  msgstr "&Ligar a:"
  
 diff --git a/po/rm.po b/po/rm.po
-index 3655e69d6dc..0f7e533bee3 100644
+index 3655e69..0f7e533 100644
 --- a/po/rm.po
 +++ b/po/rm.po
 @@ -706,7 +706,7 @@ msgid "Font St&yle:"
@@ -5014,7 +5014,7 @@ index 3655e69d6dc..0f7e533bee3 100644
  msgstr ""
  
 diff --git a/po/ro.po b/po/ro.po
-index a522a23fbc0..53e1791f462 100644
+index a522a23..53e1791 100644
 --- a/po/ro.po
 +++ b/po/ro.po
 @@ -709,7 +709,7 @@ msgid "Font St&yle:"
@@ -5165,7 +5165,7 @@ index a522a23fbc0..53e1791f462 100644
  msgstr "Leagă la:"
  
 diff --git a/po/ru.po b/po/ru.po
-index ef3038c266b..ecc138ca56d 100644
+index ef3038c..ecc138c 100644
 --- a/po/ru.po
 +++ b/po/ru.po
 @@ -718,7 +718,7 @@ msgid "Font St&yle:"
@@ -5318,7 +5318,7 @@ index ef3038c266b..ecc138ca56d 100644
  msgstr "Привязать к:"
  
 diff --git a/po/si.po b/po/si.po
-index 5ba9e2b8702..17a7a5188f3 100644
+index 5ba9e2b..17a7a51 100644
 --- a/po/si.po
 +++ b/po/si.po
 @@ -716,7 +716,7 @@ msgid "Font St&yle:"
@@ -5469,7 +5469,7 @@ index 5ba9e2b8702..17a7a5188f3 100644
  msgstr ""
  
 diff --git a/po/sk.po b/po/sk.po
-index bcc4e748f98..17eabd4b477 100644
+index bcc4e74..17eabd4 100644
 --- a/po/sk.po
 +++ b/po/sk.po
 @@ -740,7 +740,7 @@ msgid "Font St&yle:"
@@ -5621,7 +5621,7 @@ index bcc4e748f98..17eabd4b477 100644
  msgstr ""
  
 diff --git a/po/sl.po b/po/sl.po
-index 605dd7ac243..0c2e85434e5 100644
+index 605dd7a..0c2e854 100644
 --- a/po/sl.po
 +++ b/po/sl.po
 @@ -739,7 +739,7 @@ msgid "Font St&yle:"
@@ -5774,7 +5774,7 @@ index 605dd7ac243..0c2e85434e5 100644
  msgstr "&Poveži z:"
  
 diff --git a/po/sr_RS@cyrillic.po b/po/sr_RS@cyrillic.po
-index ae2ce36317f..a27d8a0653e 100644
+index ae2ce36..a27d8a0 100644
 --- a/po/sr_RS@cyrillic.po
 +++ b/po/sr_RS@cyrillic.po
 @@ -726,7 +726,7 @@ msgid "Font St&yle:"
@@ -5928,7 +5928,7 @@ index ae2ce36317f..a27d8a0653e 100644
  msgid "&Link to:"
  msgstr "Везе"
 diff --git a/po/sr_RS@latin.po b/po/sr_RS@latin.po
-index 15ac3bcd5a3..f46da1864e4 100644
+index 15ac3bc..f46da18 100644
 --- a/po/sr_RS@latin.po
 +++ b/po/sr_RS@latin.po
 @@ -769,7 +769,7 @@ msgid "Font St&yle:"
@@ -6081,7 +6081,7 @@ index 15ac3bcd5a3..f46da1864e4 100644
  msgstr "&Veza do:"
  
 diff --git a/po/sv.po b/po/sv.po
-index 0e57d832c4c..0133e32c85c 100644
+index 0e57d83..0133e32 100644
 --- a/po/sv.po
 +++ b/po/sv.po
 @@ -721,7 +721,7 @@ msgid "Font St&yle:"
@@ -6232,7 +6232,7 @@ index 0e57d832c4c..0133e32c85c 100644
  msgstr "&Länka till:"
  
 diff --git a/po/ta.po b/po/ta.po
-index 8a752352d9d..2d3fe9887f9 100644
+index 8a75235..2d3fe98 100644
 --- a/po/ta.po
 +++ b/po/ta.po
 @@ -714,7 +714,7 @@ msgid "Font St&yle:"
@@ -6378,7 +6378,7 @@ index 8a752352d9d..2d3fe9887f9 100644
  msgstr ""
  
 diff --git a/po/te.po b/po/te.po
-index f96277946d5..2ab25a8b4e7 100644
+index f962779..2ab25a8 100644
 --- a/po/te.po
 +++ b/po/te.po
 @@ -693,7 +693,7 @@ msgid "Font St&yle:"
@@ -6524,7 +6524,7 @@ index f96277946d5..2ab25a8b4e7 100644
  msgstr ""
  
 diff --git a/po/th.po b/po/th.po
-index a390504edcf..de2984e5558 100644
+index a390504..de2984e 100644
 --- a/po/th.po
 +++ b/po/th.po
 @@ -703,7 +703,7 @@ msgid "Font St&yle:"
@@ -6676,7 +6676,7 @@ index a390504edcf..de2984e5558 100644
  msgstr ""
  
 diff --git a/po/tr.po b/po/tr.po
-index 4f3f8449b34..cc92836f32f 100644
+index 4f3f844..cc92836 100644
 --- a/po/tr.po
 +++ b/po/tr.po
 @@ -711,7 +711,7 @@ msgid "Font St&yle:"
@@ -6829,7 +6829,7 @@ index 4f3f8449b34..cc92836f32f 100644
  msgstr "Hedef k&lasör:"
  
 diff --git a/po/uk.po b/po/uk.po
-index e6c3a646a20..5da929a29d1 100644
+index e6c3a64..5da929a 100644
 --- a/po/uk.po
 +++ b/po/uk.po
 @@ -707,7 +707,7 @@ msgid "Font St&yle:"
@@ -6982,7 +6982,7 @@ index e6c3a646a20..5da929a29d1 100644
  msgstr "&Направити:"
  
 diff --git a/po/wa.po b/po/wa.po
-index a4e03d18ffd..d7b4d5a30c1 100644
+index a4e03d1..d7b4d5a 100644
 --- a/po/wa.po
 +++ b/po/wa.po
 @@ -702,7 +702,7 @@ msgid "Font St&yle:"
@@ -7134,7 +7134,7 @@ index a4e03d18ffd..d7b4d5a30c1 100644
  msgstr ""
  
 diff --git a/po/wine.pot b/po/wine.pot
-index a88d999181f..b4a90146ac1 100644
+index a88d999..b4a9014 100644
 --- a/po/wine.pot
 +++ b/po/wine.pot
 @@ -678,7 +678,7 @@ msgid "Font St&yle:"
@@ -7280,7 +7280,7 @@ index a88d999181f..b4a90146ac1 100644
  msgstr ""
  
 diff --git a/po/zh_CN.po b/po/zh_CN.po
-index 254ccbae649..6422721c6b0 100644
+index 254ccba..6422721 100644
 --- a/po/zh_CN.po
 +++ b/po/zh_CN.po
 @@ -700,7 +700,7 @@ msgid "Font St&yle:"
@@ -7429,7 +7429,7 @@ index 254ccbae649..6422721c6b0 100644
  msgstr "映射至(&L):"
  
 diff --git a/po/zh_TW.po b/po/zh_TW.po
-index 29544fb670c..056f4ec0ed0 100644
+index 29544fb..056f4ec 100644
 --- a/po/zh_TW.po
 +++ b/po/zh_TW.po
 @@ -700,7 +700,7 @@ msgid "Font St&yle:"
@@ -7582,7 +7582,7 @@ index 29544fb670c..056f4ec0ed0 100644
  msgstr "連結至(&L):"
  
 diff --git a/programs/winecfg/audio.c b/programs/winecfg/audio.c
-index 102ffc502db..b0fa6e8f390 100644
+index 102ffc5..b0fa6e8 100644
 --- a/programs/winecfg/audio.c
 +++ b/programs/winecfg/audio.c
 @@ -61,8 +61,6 @@ static WCHAR g_drv_keyW[256] = L"Software\\Wine\\Drivers\\";
@@ -7713,7 +7713,7 @@ index 102ffc502db..b0fa6e8f390 100644
                if(HIWORD(wParam) == CBN_SELCHANGE){
                    UINT dev, idx;
 diff --git a/programs/winecfg/resource.h b/programs/winecfg/resource.h
-index 58ae5986daf..803a0fc150e 100644
+index 58ae598..803a0fc 100644
 --- a/programs/winecfg/resource.h
 +++ b/programs/winecfg/resource.h
 @@ -159,7 +159,6 @@
@@ -7725,7 +7725,7 @@ index 58ae5986daf..803a0fc150e 100644
  /* desktop integration tab */
  #define IDC_THEME_COLORCOMBO            1401
 diff --git a/programs/winecfg/winecfg.rc b/programs/winecfg/winecfg.rc
-index ff116523500..4370d9b360c 100644
+index ff11652..4370d9b 100644
 --- a/programs/winecfg/winecfg.rc
 +++ b/programs/winecfg/winecfg.rc
 @@ -273,18 +273,16 @@ FONT 8, "MS Shell Dlg"

@@ -1,18 +1,19 @@
-From 96cbef798a32cc56046bc7213f75865ca31c5564 Mon Sep 17 00:00:00 2001
+From 5ac2ef81bbe6ca582d5878c76c9a2d1bea165d8f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Fri, 6 Jan 2023 11:31:36 +0100
-Subject: [PATCH 19/48] winex11: Disable keyboard scancode auto-detection by
+Subject: [PATCH 19/49] winex11: Disable keyboard scancode auto-detection by
  default.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=30984
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=45605
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/winex11.drv/x11drv_main.c | 2 +-
  programs/winecfg/input.c       | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/dlls/winex11.drv/x11drv_main.c b/dlls/winex11.drv/x11drv_main.c
-index fb1792d8ca1..c534b7e498f 100644
+index fb1792d..c534b7e 100644
 --- a/dlls/winex11.drv/x11drv_main.c
 +++ b/dlls/winex11.drv/x11drv_main.c
 @@ -74,7 +74,7 @@ BOOL use_primary_selection = FALSE;
@@ -25,7 +26,7 @@ index fb1792d8ca1..c534b7e498f 100644
  BOOL private_color_map = FALSE;
  int primary_monitor = 0;
 diff --git a/programs/winecfg/input.c b/programs/winecfg/input.c
-index a9d83b45f00..3ee20d49874 100644
+index a9d83b4..3ee20d4 100644
 --- a/programs/winecfg/input.c
 +++ b/programs/winecfg/input.c
 @@ -65,7 +65,7 @@ static void init_dialog( HWND dialog )

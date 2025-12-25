@@ -1,10 +1,11 @@
-From f3c1dcbb865d787fabdea26305041c9b3b55549d Mon Sep 17 00:00:00 2001
+From 52c03089cfb6375f54cd4f094e69121969158d50 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Fri, 6 Jan 2023 08:15:41 +0100
-Subject: [PATCH 14/48] winecfg: Add a keyboard layout selection config option.
+Subject: [PATCH 14/49] winecfg: Add a keyboard layout selection config option.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=30984
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=45605
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  programs/winecfg/input.c    | 48 ++++++++++++++++++++++++++++++++++++-
  programs/winecfg/resource.h |  3 +++
@@ -12,7 +13,7 @@ Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=45605
  3 files changed, 59 insertions(+), 1 deletion(-)
 
 diff --git a/programs/winecfg/input.c b/programs/winecfg/input.c
-index 115161b9040..f2f035df80f 100644
+index 115161b..f2f035d 100644
 --- a/programs/winecfg/input.c
 +++ b/programs/winecfg/input.c
 @@ -35,7 +35,9 @@ static BOOL updating_ui;
@@ -92,7 +93,7 @@ index 115161b9040..f2f035df80f 100644
          break;
  
 diff --git a/programs/winecfg/resource.h b/programs/winecfg/resource.h
-index 8022bf4b30c..05331f9db58 100644
+index 8022bf4..05331f9 100644
 --- a/programs/winecfg/resource.h
 +++ b/programs/winecfg/resource.h
 @@ -235,3 +235,6 @@
@@ -103,7 +104,7 @@ index 8022bf4b30c..05331f9db58 100644
 +
 +#define IDS_INPUT_AUTO_DETECT_LAYOUT    8501
 diff --git a/programs/winecfg/winecfg.rc b/programs/winecfg/winecfg.rc
-index f993e5eec89..6c814617f15 100644
+index f993e5e..6c81461 100644
 --- a/programs/winecfg/winecfg.rc
 +++ b/programs/winecfg/winecfg.rc
 @@ -136,6 +136,11 @@ BEGIN

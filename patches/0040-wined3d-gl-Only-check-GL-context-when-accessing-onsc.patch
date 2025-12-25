@@ -1,7 +1,7 @@
-From 02e56176c8c52e1be31b723afcc56da3906d207c Mon Sep 17 00:00:00 2001
+From f495536b711ba017146333ca562daef37e6cca77 Mon Sep 17 00:00:00 2001
 From: Matteo Bruni <mbruni@codeweavers.com>
 Date: Wed, 17 Dec 2025 14:21:43 +0100
-Subject: [PATCH 40/48] wined3d/gl: Only check GL context when accessing
+Subject: [PATCH 40/49] wined3d/gl: Only check GL context when accessing
  onscreen resources.
 
 Checking every time the GL context is acquired is a lot. We could do
@@ -10,12 +10,14 @@ such) but I don't think it's worth it.
 
 This avoids frequent GetDC() calls, which introduce significant
 locking overhead.
+
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/wined3d/context_gl.c | 16 +++++++++-------
  1 file changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/dlls/wined3d/context_gl.c b/dlls/wined3d/context_gl.c
-index 89f6cfcd948..7cb5b82f9f1 100644
+index 89f6cfc..7cb5b82 100644
 --- a/dlls/wined3d/context_gl.c
 +++ b/dlls/wined3d/context_gl.c
 @@ -1608,11 +1608,11 @@ void wined3d_context_gl_release(struct wined3d_context_gl *context_gl)

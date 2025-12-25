@@ -1,9 +1,10 @@
-From 564525980dd82cb96a7b9688c813d4c05307b385 Mon Sep 17 00:00:00 2001
+From 4d1c92a79ccb5b07fe447df4ea34dae326332e0e Mon Sep 17 00:00:00 2001
 From: Sebastian Lackner <sebastian@fds-team.de>
 Date: Sat, 21 Feb 2015 23:37:26 +0100
-Subject: [PATCH 07/48] winecfg: Add checkbox to enable/disable vaapi GPU
+Subject: [PATCH 07/49] winecfg: Add checkbox to enable/disable vaapi GPU
  decoder.
 
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  programs/winecfg/resource.h |  1 +
  programs/winecfg/staging.c  | 20 ++++++++++++++++++++
@@ -11,7 +12,7 @@ Subject: [PATCH 07/48] winecfg: Add checkbox to enable/disable vaapi GPU
  3 files changed, 22 insertions(+)
 
 diff --git a/programs/winecfg/resource.h b/programs/winecfg/resource.h
-index 68742471de2..17103620b12 100644
+index 6874247..1710362 100644
 --- a/programs/winecfg/resource.h
 +++ b/programs/winecfg/resource.h
 @@ -218,6 +218,7 @@
@@ -23,7 +24,7 @@ index 68742471de2..17103620b12 100644
  /* About tab */
  #define IDC_ABT_OWNER                8432
 diff --git a/programs/winecfg/staging.c b/programs/winecfg/staging.c
-index 0bd6e1741a7..13b43c6e909 100644
+index 0bd6e17..13b43c6 100644
 --- a/programs/winecfg/staging.c
 +++ b/programs/winecfg/staging.c
 @@ -42,10 +42,26 @@ static void csmt_set(BOOL status)
@@ -65,7 +66,7 @@ index 0bd6e1741a7..13b43c6e909 100644
          break;
      }
 diff --git a/programs/winecfg/winecfg.rc b/programs/winecfg/winecfg.rc
-index 713f61b1b2e..129a3600f74 100644
+index 713f61b..129a360 100644
 --- a/programs/winecfg/winecfg.rc
 +++ b/programs/winecfg/winecfg.rc
 @@ -328,6 +328,7 @@ BEGIN

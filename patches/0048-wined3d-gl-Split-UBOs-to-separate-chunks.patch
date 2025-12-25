@@ -1,12 +1,13 @@
-From abbb0dfe7a13ce0eb3b6cd2d46dc6462f3bd519d Mon Sep 17 00:00:00 2001
+From d952cfdbdb1d67c01802e2d9160169c10ce3ca60 Mon Sep 17 00:00:00 2001
 From: Matteo Bruni <mbruni@codeweavers.com>
 Date: Wed, 17 Dec 2025 13:32:48 +0100
-Subject: [PATCH 48/48] wined3d/gl: Split UBOs to separate chunks.
+Subject: [PATCH 48/49] wined3d/gl: Split UBOs to separate chunks.
 
 It matters a lot on Nvidia proprietary drivers, where binding to
 GL_UNIFORM_BUFFER makes a very significant difference.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=56167
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/wined3d/context_gl.c | 16 ++++++++++------
  dlls/wined3d/device.c     | 23 ++++++++++++++++++++---
@@ -14,7 +15,7 @@ Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=56167
  3 files changed, 31 insertions(+), 9 deletions(-)
 
 diff --git a/dlls/wined3d/context_gl.c b/dlls/wined3d/context_gl.c
-index 7cb5b82f9f1..89578a27a90 100644
+index 7cb5b82..89578a2 100644
 --- a/dlls/wined3d/context_gl.c
 +++ b/dlls/wined3d/context_gl.c
 @@ -2655,6 +2655,7 @@ GLuint wined3d_context_gl_allocate_vram_chunk_buffer(struct wined3d_context_gl *
@@ -79,7 +80,7 @@ index 7cb5b82f9f1..89578a27a90 100644
  
          adapter_adjust_mapped_memory(context_gl->c.device->adapter, -WINED3D_ALLOCATOR_CHUNK_SIZE);
 diff --git a/dlls/wined3d/device.c b/dlls/wined3d/device.c
-index 443bf10ab76..fdb7dee698e 100644
+index 443bf10..fdb7dee 100644
 --- a/dlls/wined3d/device.c
 +++ b/dlls/wined3d/device.c
 @@ -1243,6 +1243,7 @@ static const struct wined3d_allocator_ops wined3d_allocator_gl_ops =
@@ -141,7 +142,7 @@ index 443bf10ab76..fdb7dee698e 100644
      GLsizeiptr buffer_offset = 0;
      GLuint id = 0;
 diff --git a/dlls/wined3d/wined3d_gl.h b/dlls/wined3d/wined3d_gl.h
-index c18b3fa8d0a..a6330002b88 100644
+index c18b3fa..a633000 100644
 --- a/dlls/wined3d/wined3d_gl.h
 +++ b/dlls/wined3d/wined3d_gl.h
 @@ -918,6 +918,7 @@ void wined3d_device_gl_create_primary_opengl_context_cs(void *object);

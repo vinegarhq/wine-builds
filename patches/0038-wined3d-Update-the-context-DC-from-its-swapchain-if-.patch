@@ -1,7 +1,7 @@
-From e3e409e741173f888eca2612ed5bae294336eb76 Mon Sep 17 00:00:00 2001
+From 455be183b6b7c82e86b11de9352caed05fe978d7 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Thu, 18 Dec 2025 20:40:04 +0100
-Subject: [PATCH 38/48] wined3d: Update the context DC from its swapchain if it
+Subject: [PATCH 38/49] wined3d: Update the context DC from its swapchain if it
  changed.
 
 The context keeps a weak pointer to the swapchain, and the swapchain
@@ -15,12 +15,13 @@ As we now borrow the DCs from the swapchains, we also need to check if
 the context DC needs to be updated.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=58709
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/wined3d/context_gl.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/dlls/wined3d/context_gl.c b/dlls/wined3d/context_gl.c
-index 8aeb2284f44..89f6cfcd948 100644
+index 8aeb228..89f6cfc 100644
 --- a/dlls/wined3d/context_gl.c
 +++ b/dlls/wined3d/context_gl.c
 @@ -1295,7 +1295,8 @@ static void wined3d_context_gl_update_window(struct wined3d_context_gl *context_

@@ -1,7 +1,7 @@
-From 610c9ee2e216face93d37ebdb1e4d5fe986f1546 Mon Sep 17 00:00:00 2001
+From 4397c9049f26bfabd1470092148cc16284173731 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Tue, 9 Dec 2025 07:54:10 +0100
-Subject: [PATCH 27/48] win32u: Iterate the client surfaces rather than the
+Subject: [PATCH 27/49] win32u: Iterate the client surfaces rather than the
  toplevel window tree.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59089
@@ -11,7 +11,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  1 file changed, 2 insertions(+), 14 deletions(-)
 
 diff --git a/dlls/win32u/window.c b/dlls/win32u/window.c
-index ebd66cc8d29..d3c6da11bdb 100644
+index ebd66cc..d3c6da1 100644
 --- a/dlls/win32u/window.c
 +++ b/dlls/win32u/window.c
 @@ -310,7 +310,7 @@ static void update_client_surfaces( HWND hwnd )

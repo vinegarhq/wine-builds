@@ -1,7 +1,7 @@
-From 656ff157ffdefa70e4cb79f5274ed5ed8e2fe99d Mon Sep 17 00:00:00 2001
+From 2d84fa9c7a397d5d429d5eab83b784cdba13ad1d Mon Sep 17 00:00:00 2001
 From: sewn <sewn@disroot.org>
 Date: Sun, 21 Dec 2025 16:55:13 +0300
-Subject: [PATCH 34/48] winex11: Add Xwayland check
+Subject: [PATCH 34/49] winex11: Add Xwayland check
 
 Signed-off-by: sewn <sewn@disroot.org>
 ---
@@ -10,7 +10,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  2 files changed, 4 insertions(+)
 
 diff --git a/dlls/winex11.drv/x11drv.h b/dlls/winex11.drv/x11drv.h
-index 34f34724391..2acbb4537ae 100644
+index 34f3472..2acbb45 100644
 --- a/dlls/winex11.drv/x11drv.h
 +++ b/dlls/winex11.drv/x11drv.h
 @@ -472,6 +472,7 @@ extern BOOL grab_fullscreen;
@@ -22,7 +22,7 @@ index 34f34724391..2acbb4537ae 100644
  extern BOOL managed_mode;
  extern BOOL private_color_map;
 diff --git a/dlls/winex11.drv/x11drv_main.c b/dlls/winex11.drv/x11drv_main.c
-index e719f848a0c..c6a971684b2 100644
+index e719f84..c6a9716 100644
 --- a/dlls/winex11.drv/x11drv_main.c
 +++ b/dlls/winex11.drv/x11drv_main.c
 @@ -70,6 +70,7 @@ BOOL usexvidmode = TRUE;

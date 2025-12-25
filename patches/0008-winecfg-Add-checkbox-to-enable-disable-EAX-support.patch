@@ -1,8 +1,9 @@
-From 805e5bf0372140e4f08d343be9d68e5b270b6ee8 Mon Sep 17 00:00:00 2001
+From a3871bee2d1e0693c1309325b1f724a0fb3b41aa Mon Sep 17 00:00:00 2001
 From: Mark Harmstone <mark@harmstone.com>
 Date: Sun, 5 Apr 2015 14:16:11 +0100
-Subject: [PATCH 08/48] winecfg: Add checkbox to enable/disable EAX support.
+Subject: [PATCH 08/49] winecfg: Add checkbox to enable/disable EAX support.
 
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  programs/winecfg/resource.h |  1 +
  programs/winecfg/staging.c  | 21 +++++++++++++++++++++
@@ -10,7 +11,7 @@ Subject: [PATCH 08/48] winecfg: Add checkbox to enable/disable EAX support.
  3 files changed, 23 insertions(+)
 
 diff --git a/programs/winecfg/resource.h b/programs/winecfg/resource.h
-index 17103620b12..6720e9ff0f7 100644
+index 1710362..6720e9f 100644
 --- a/programs/winecfg/resource.h
 +++ b/programs/winecfg/resource.h
 @@ -219,6 +219,7 @@
@@ -22,7 +23,7 @@ index 17103620b12..6720e9ff0f7 100644
  /* About tab */
  #define IDC_ABT_OWNER                8432
 diff --git a/programs/winecfg/staging.c b/programs/winecfg/staging.c
-index 13b43c6e909..018edf6aa30 100644
+index 13b43c6..018edf6 100644
 --- a/programs/winecfg/staging.c
 +++ b/programs/winecfg/staging.c
 @@ -58,10 +58,27 @@ static void vaapi_set(BOOL status)
@@ -65,7 +66,7 @@ index 13b43c6e909..018edf6aa30 100644
          break;
      }
 diff --git a/programs/winecfg/winecfg.rc b/programs/winecfg/winecfg.rc
-index 129a3600f74..4ac12382eb0 100644
+index 129a360..4ac1238 100644
 --- a/programs/winecfg/winecfg.rc
 +++ b/programs/winecfg/winecfg.rc
 @@ -329,6 +329,7 @@ BEGIN

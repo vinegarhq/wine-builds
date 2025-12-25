@@ -1,17 +1,18 @@
-From 1890d4b56fa7f837081a2b7eb6071cfb8e3bf0f1 Mon Sep 17 00:00:00 2001
+From 32031c6dacbfdfa5e42952212707dd84d201e5a0 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Wed, 30 Nov 2022 18:46:00 +0100
-Subject: [PATCH 17/48] winex11: Use scancode high bit to set
+Subject: [PATCH 17/49] winex11: Use scancode high bit to set
  KEYEVENTF_EXTENDEDKEY flag.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=30984
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=45605
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/winex11.drv/keyboard.c | 12 ++++++------
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/dlls/winex11.drv/keyboard.c b/dlls/winex11.drv/keyboard.c
-index 67d19936095..295ff887eb9 100644
+index 67d1993..295ff88 100644
 --- a/dlls/winex11.drv/keyboard.c
 +++ b/dlls/winex11.drv/keyboard.c
 @@ -1380,7 +1380,7 @@ BOOL X11DRV_KeyEvent( HWND hwnd, XEvent *xev )

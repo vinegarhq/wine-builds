@@ -1,18 +1,20 @@
-From 02630fe0d5412d60716627aa072c8bbaacac4e60 Mon Sep 17 00:00:00 2001
+From 614e4598ded44e553ff7ba21b7ec84b2d7e770de Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Tue, 9 Dec 2025 11:05:10 +0100
-Subject: [PATCH 31/48] win32u: Remove unnecessary drawable flush in
+Subject: [PATCH 31/49] win32u: Remove unnecessary drawable flush in
  context_sync_drawables.
 
 This fixes sluggish rendering of Steam and other CEF based applications,
 as wined3d calls wglMakeCurrent with possibly already active surface
 every time it tries to activate a context.
+
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/win32u/opengl.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/dlls/win32u/opengl.c b/dlls/win32u/opengl.c
-index 398a984e23e..db659ba52f9 100644
+index 398a984..db659ba 100644
 --- a/dlls/win32u/opengl.c
 +++ b/dlls/win32u/opengl.c
 @@ -1692,12 +1692,13 @@ static BOOL context_sync_drawables( struct wgl_context *context, HDC draw_hdc, H

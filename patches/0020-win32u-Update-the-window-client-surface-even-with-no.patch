@@ -1,7 +1,7 @@
-From 6286f4cdcca712fcc40eb4e550c0a59d1beab5f0 Mon Sep 17 00:00:00 2001
+From d275fa4cdaba295f71a3a6eb0a5df051dc9ee09d Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Tue, 2 Dec 2025 13:20:10 +0100
-Subject: [PATCH 20/48] win32u: Update the window client surface even with no
+Subject: [PATCH 20/49] win32u: Update the window client surface even with no
  children.
 
 Based on a patch from brett.didemus on Bugzilla, thanks!
@@ -13,7 +13,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/dlls/win32u/window.c b/dlls/win32u/window.c
-index 4c52bc21f2a..66d270fd3a2 100644
+index 4c52bc2..66d270f 100644
 --- a/dlls/win32u/window.c
 +++ b/dlls/win32u/window.c
 @@ -2136,11 +2136,11 @@ static void update_window_client_surfaces( HWND hwnd )

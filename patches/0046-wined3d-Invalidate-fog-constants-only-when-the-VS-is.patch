@@ -1,18 +1,19 @@
-From 5c25aa367eb4b9d08f18b64534cbbd5299fc8fcc Mon Sep 17 00:00:00 2001
+From 518129c6fa1cf8ee10e26e74f7c9a951c66d76f8 Mon Sep 17 00:00:00 2001
 From: Elizabeth Figura <zfigura@codeweavers.com>
 Date: Sun, 21 Dec 2025 19:39:02 -0600
-Subject: [PATCH 46/48] wined3d: Invalidate fog constants only when the VS is
+Subject: [PATCH 46/49] wined3d: Invalidate fog constants only when the VS is
  toggled.
 
 Other states can affect ffp_vs_settings but not fog constants.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59013
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/wined3d/stateblock.c | 10 +++++++---
  1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/dlls/wined3d/stateblock.c b/dlls/wined3d/stateblock.c
-index c40dcf1380b..befcdbf6f2f 100644
+index c40dcf1..befcdbf 100644
 --- a/dlls/wined3d/stateblock.c
 +++ b/dlls/wined3d/stateblock.c
 @@ -1328,15 +1328,19 @@ void CDECL wined3d_stateblock_apply(const struct wined3d_stateblock *stateblock,

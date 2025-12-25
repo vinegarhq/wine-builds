@@ -1,7 +1,7 @@
-From 287dd5bba1d006e408ea3c048baf95d8ae56b257 Mon Sep 17 00:00:00 2001
+From 57d03910b4ce2e7b778c43455d8f409566b028cf Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Michael=20M=C3=BCller?= <michael@fds-team.de>
 Date: Sat, 20 Dec 2014 23:10:38 +0100
-Subject: [PATCH 05/48] Add licenses for fonts as separate files.
+Subject: [PATCH 05/49] Add licenses for fonts as separate files.
 
 Signed-off-by: sewn <sewn@disroot.org>
 ---
@@ -18,7 +18,7 @@ Signed-off-by: sewn <sewn@disroot.org>
 
 diff --git a/COPYING.arial b/COPYING.arial
 new file mode 100644
-index 00000000000..b75642825ba
+index 0000000..b756428
 --- /dev/null
 +++ b/COPYING.arial
 @@ -0,0 +1,65 @@
@@ -89,7 +89,7 @@ index 00000000000..b75642825ba
 +trademark of Red Hat, Inc.
 diff --git a/COPYING.cour b/COPYING.cour
 new file mode 100644
-index 00000000000..b75642825ba
+index 0000000..b756428
 --- /dev/null
 +++ b/COPYING.cour
 @@ -0,0 +1,65 @@
@@ -160,7 +160,7 @@ index 00000000000..b75642825ba
 +trademark of Red Hat, Inc.
 diff --git a/COPYING.msyh b/COPYING.msyh
 new file mode 100644
-index 00000000000..94a9ed024d3
+index 0000000..94a9ed0
 --- /dev/null
 +++ b/COPYING.msyh
 @@ -0,0 +1,674 @@
@@ -840,7 +840,7 @@ index 00000000000..94a9ed024d3
 +<http://www.gnu.org/philosophy/why-not-lgpl.html>.
 diff --git a/COPYING.times b/COPYING.times
 new file mode 100644
-index 00000000000..b75642825ba
+index 0000000..b756428
 --- /dev/null
 +++ b/COPYING.times
 @@ -0,0 +1,65 @@
@@ -910,7 +910,7 @@ index 00000000000..b75642825ba
 +Copyright © 2007-2011 Red Hat, Inc. All rights reserved. LIBERATION is a
 +trademark of Red Hat, Inc.
 diff --git a/LICENSE b/LICENSE
-index 58d15edce07..6d78311171f 100644
+index 58d15ed..6d78311 100644
 --- a/LICENSE
 +++ b/LICENSE
 @@ -15,3 +15,27 @@ A copy of the GNU Lesser General Public License is included in the

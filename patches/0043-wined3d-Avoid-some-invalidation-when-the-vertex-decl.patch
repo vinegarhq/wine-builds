@@ -1,16 +1,17 @@
-From aa8ab7ef604a74cdafd76f8976171ef76de1ded8 Mon Sep 17 00:00:00 2001
+From a4800ddcf9be606b27321226d76892e5641e0fb5 Mon Sep 17 00:00:00 2001
 From: Elizabeth Figura <zfigura@codeweavers.com>
 Date: Fri, 19 Dec 2025 16:12:04 -0600
-Subject: [PATCH 43/48] wined3d: Avoid some invalidation when the vertex
+Subject: [PATCH 43/49] wined3d: Avoid some invalidation when the vertex
  declaration is set redundantly.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59013
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/wined3d/stateblock.c | 4 ++++
  1 file changed, 4 insertions(+)
 
 diff --git a/dlls/wined3d/stateblock.c b/dlls/wined3d/stateblock.c
-index efce0f62d11..64dc32f2286 100644
+index efce0f6..64dc32f 100644
 --- a/dlls/wined3d/stateblock.c
 +++ b/dlls/wined3d/stateblock.c
 @@ -1590,6 +1590,10 @@ void CDECL wined3d_stateblock_set_vertex_declaration(struct wined3d_stateblock *

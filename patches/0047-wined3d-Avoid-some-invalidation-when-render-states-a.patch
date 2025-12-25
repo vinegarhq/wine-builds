@@ -1,16 +1,17 @@
-From 678312b37661e80eb5a120b3d843f9de8e492d17 Mon Sep 17 00:00:00 2001
+From d3cf51973c65aef06c028e91c35ddc4255b7fc1d Mon Sep 17 00:00:00 2001
 From: Elizabeth Figura <zfigura@codeweavers.com>
 Date: Sun, 21 Dec 2025 19:41:47 -0600
-Subject: [PATCH 47/48] wined3d: Avoid some invalidation when render states are
+Subject: [PATCH 47/49] wined3d: Avoid some invalidation when render states are
  set redundantly.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59013
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/wined3d/stateblock.c | 6 ++++++
  1 file changed, 6 insertions(+)
 
 diff --git a/dlls/wined3d/stateblock.c b/dlls/wined3d/stateblock.c
-index befcdbf6f2f..9e9a8c6db27 100644
+index befcdbf..9e9a8c6 100644
 --- a/dlls/wined3d/stateblock.c
 +++ b/dlls/wined3d/stateblock.c
 @@ -1649,6 +1649,12 @@ void CDECL wined3d_stateblock_set_render_state(struct wined3d_stateblock *stateb

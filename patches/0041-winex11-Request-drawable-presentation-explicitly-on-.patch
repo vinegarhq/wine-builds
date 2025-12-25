@@ -1,7 +1,7 @@
-From 93647837ee405010450075c254bcc6787b6a5e7e Mon Sep 17 00:00:00 2001
+From 03537a699ab8472c3dda1a12759b9e00bbae7756 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Sun, 21 Dec 2025 00:23:28 +0100
-Subject: [PATCH 41/48] winex11: Request drawable presentation explicitly on
+Subject: [PATCH 41/49] winex11: Request drawable presentation explicitly on
  flush.
 
 Instead of doing for every flush, which might happen more often than
@@ -9,6 +9,7 @@ necessary, as they are shared with some additional GL operations for
 the memory DCs.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59147
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/win32u/opengl.c         | 6 +++---
  dlls/winex11.drv/opengl.c    | 2 ++
@@ -16,7 +17,7 @@ Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59147
  3 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/dlls/win32u/opengl.c b/dlls/win32u/opengl.c
-index db659ba52f9..76140b3b95b 100644
+index db659ba..76140b3 100644
 --- a/dlls/win32u/opengl.c
 +++ b/dlls/win32u/opengl.c
 @@ -163,8 +163,7 @@ static void opengl_drawable_flush( struct opengl_drawable *drawable, int interva
@@ -47,7 +48,7 @@ index db659ba52f9..76140b3b95b 100644
      if (force_swap) opengl_drawable_swap( draw );
  
 diff --git a/dlls/winex11.drv/opengl.c b/dlls/winex11.drv/opengl.c
-index e945b14b3b1..c7aa4227462 100644
+index e945b14..c7aa422 100644
 --- a/dlls/winex11.drv/opengl.c
 +++ b/dlls/winex11.drv/opengl.c
 @@ -1211,6 +1211,7 @@ static void x11drv_surface_flush( struct opengl_drawable *base, UINT flags )
@@ -67,7 +68,7 @@ index e945b14b3b1..c7aa4227462 100644
      if (InterlockedCompareExchange( &base->client->offscreen, 0, 0 ))
      {
 diff --git a/include/wine/opengl_driver.h b/include/wine/opengl_driver.h
-index 77d1c818438..5cc5e1ffef8 100644
+index 77d1c81..5cc5e1f 100644
 --- a/include/wine/opengl_driver.h
 +++ b/include/wine/opengl_driver.h
 @@ -172,6 +172,7 @@ struct opengl_drawable_funcs

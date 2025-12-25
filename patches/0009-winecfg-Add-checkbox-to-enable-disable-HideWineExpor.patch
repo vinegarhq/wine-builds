@@ -1,9 +1,10 @@
-From 632e91b77584e33287d62ff51bb12e18d4dd9e6a Mon Sep 17 00:00:00 2001
+From 6d6214336c3fe70dda8225e84ce87187fb99c4c4 Mon Sep 17 00:00:00 2001
 From: Sebastian Lackner <sebastian@fds-team.de>
 Date: Sat, 30 May 2015 02:23:44 +0200
-Subject: [PATCH 09/48] winecfg: Add checkbox to enable/disable HideWineExports
+Subject: [PATCH 09/49] winecfg: Add checkbox to enable/disable HideWineExports
  registry key.
 
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  programs/winecfg/resource.h |  1 +
  programs/winecfg/staging.c  | 22 ++++++++++++++++++++++
@@ -11,7 +12,7 @@ Subject: [PATCH 09/48] winecfg: Add checkbox to enable/disable HideWineExports
  3 files changed, 24 insertions(+)
 
 diff --git a/programs/winecfg/resource.h b/programs/winecfg/resource.h
-index 6720e9ff0f7..04e41976915 100644
+index 6720e9f..04e4197 100644
 --- a/programs/winecfg/resource.h
 +++ b/programs/winecfg/resource.h
 @@ -220,6 +220,7 @@
@@ -23,7 +24,7 @@ index 6720e9ff0f7..04e41976915 100644
  /* About tab */
  #define IDC_ABT_OWNER                8432
 diff --git a/programs/winecfg/staging.c b/programs/winecfg/staging.c
-index 018edf6aa30..7e74466fa9e 100644
+index 018edf6..7e74466 100644
 --- a/programs/winecfg/staging.c
 +++ b/programs/winecfg/staging.c
 @@ -74,11 +74,29 @@ static void eax_set(BOOL status)
@@ -68,7 +69,7 @@ index 018edf6aa30..7e74466fa9e 100644
          break;
      }
 diff --git a/programs/winecfg/winecfg.rc b/programs/winecfg/winecfg.rc
-index 4ac12382eb0..3f17d850927 100644
+index 4ac1238..3f17d85 100644
 --- a/programs/winecfg/winecfg.rc
 +++ b/programs/winecfg/winecfg.rc
 @@ -330,6 +330,7 @@ BEGIN

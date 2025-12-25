@@ -1,16 +1,17 @@
-From f19fa6c061b4a872949004f1804af14138c68246 Mon Sep 17 00:00:00 2001
+From 2004e8e7628935204f8bc16e42c410e811d8f7a6 Mon Sep 17 00:00:00 2001
 From: Elizabeth Figura <zfigura@codeweavers.com>
 Date: Fri, 19 Dec 2025 16:12:42 -0600
-Subject: [PATCH 44/48] wined3d: Avoid some invalidation when the viewport is
+Subject: [PATCH 44/49] wined3d: Avoid some invalidation when the viewport is
  set redundantly.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59013
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/wined3d/stateblock.c | 9 +++++++++
  1 file changed, 9 insertions(+)
 
 diff --git a/dlls/wined3d/stateblock.c b/dlls/wined3d/stateblock.c
-index 64dc32f2286..71ef3d33b99 100644
+index 64dc32f..71ef3d3 100644
 --- a/dlls/wined3d/stateblock.c
 +++ b/dlls/wined3d/stateblock.c
 @@ -84,6 +84,7 @@ struct wined3d_stateblock

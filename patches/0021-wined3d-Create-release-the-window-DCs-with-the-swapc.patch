@@ -1,10 +1,11 @@
-From de54b5a3828d4b57a663213804ede6340b824986 Mon Sep 17 00:00:00 2001
+From 5353b5a5037cdd0245e034c776feb7f203f015ce Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Mon, 1 Dec 2025 12:31:21 +0100
-Subject: [PATCH 21/48] wined3d: Create / release the window DCs with the
+Subject: [PATCH 21/49] wined3d: Create / release the window DCs with the
  swapchains.
 
 Wine-Bug: http://bugs.winehq.org/show_bug.cgi?id=58491
+Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/wined3d/context_gl.c      | 17 ++---------------
  dlls/wined3d/swapchain.c       | 29 +++++++++++++++++++----------
@@ -12,7 +13,7 @@ Wine-Bug: http://bugs.winehq.org/show_bug.cgi?id=58491
  3 files changed, 22 insertions(+), 25 deletions(-)
 
 diff --git a/dlls/wined3d/context_gl.c b/dlls/wined3d/context_gl.c
-index ac1b9370fc1..a13718bba92 100644
+index ac1b937..a13718b 100644
 --- a/dlls/wined3d/context_gl.c
 +++ b/dlls/wined3d/context_gl.c
 @@ -1286,7 +1286,6 @@ static BOOL wined3d_context_gl_set_gl_context(struct wined3d_context_gl *context
@@ -81,7 +82,7 @@ index ac1b9370fc1..a13718bba92 100644
  }
  
 diff --git a/dlls/wined3d/swapchain.c b/dlls/wined3d/swapchain.c
-index a1000ec2393..2384a3d03d2 100644
+index a1000ec..2384a3d 100644
 --- a/dlls/wined3d/swapchain.c
 +++ b/dlls/wined3d/swapchain.c
 @@ -158,6 +158,9 @@ ULONG CDECL wined3d_swapchain_decref(struct wined3d_swapchain *swapchain)
@@ -188,7 +189,7 @@ index a1000ec2393..2384a3d03d2 100644
      wined3d_mutex_unlock();
  
 diff --git a/dlls/wined3d/wined3d_private.h b/dlls/wined3d/wined3d_private.h
-index 7b955d798f8..d9e06c79ece 100644
+index 7b955d7..d9e06c7 100644
 --- a/dlls/wined3d/wined3d_private.h
 +++ b/dlls/wined3d/wined3d_private.h
 @@ -4120,6 +4120,7 @@ struct wined3d_swapchain
