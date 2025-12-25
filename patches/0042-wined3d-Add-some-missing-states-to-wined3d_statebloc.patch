@@ -1,7 +1,7 @@
 From 9ee5ac66ccf151ad70c91e939044bf02f965c18f Mon Sep 17 00:00:00 2001
 From: Elizabeth Figura <zfigura@codeweavers.com>
 Date: Sun, 21 Dec 2025 21:02:06 -0600
-Subject: [PATCH 42/49] wined3d: Add some missing states to
+Subject: [PATCH 42/50] wined3d: Add some missing states to
  wined3d_stateblock_invalidate_initial_states().
 
 Signed-off-by: sewn <sewn@disroot.org>

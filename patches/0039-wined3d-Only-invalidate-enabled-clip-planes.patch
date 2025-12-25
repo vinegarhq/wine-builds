@@ -1,7 +1,7 @@
 From b4250c497c8e520723e2aa183794b69877e32155 Mon Sep 17 00:00:00 2001
 From: Elizabeth Figura <zfigura@codeweavers.com>
 Date: Thu, 18 Dec 2025 13:56:17 -0600
-Subject: [PATCH 39/49] wined3d: Only invalidate enabled clip planes.
+Subject: [PATCH 39/50] wined3d: Only invalidate enabled clip planes.
 
 When the view matrix or vertex shader changes, that is.
 

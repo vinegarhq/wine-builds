@@ -1,7 +1,7 @@
 From a4800ddcf9be606b27321226d76892e5641e0fb5 Mon Sep 17 00:00:00 2001
 From: Elizabeth Figura <zfigura@codeweavers.com>
 Date: Fri, 19 Dec 2025 16:12:04 -0600
-Subject: [PATCH 43/49] wined3d: Avoid some invalidation when the vertex
+Subject: [PATCH 43/50] wined3d: Avoid some invalidation when the vertex
  declaration is set redundantly.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59013
