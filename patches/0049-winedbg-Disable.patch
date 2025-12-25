@@ -1,0 +1,23 @@
+From 4f0f96de558e2d4c6ccbd0185bb2d2c0f4b9f2c8 Mon Sep 17 00:00:00 2001
+From: sewn <sewn@disroot.org>
+Date: Thu, 25 Dec 2025 21:32:39 +0300
+Subject: [PATCH 49/49] winedbg: Disable
+
+Signed-off-by: sewn <sewn@disroot.org>
+---
+ programs/winedbg/intvar.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/programs/winedbg/intvar.h b/programs/winedbg/intvar.h
+index db117c9..3ce9f59 100644
+--- a/programs/winedbg/intvar.h
++++ b/programs/winedbg/intvar.h
+@@ -38,4 +38,4 @@ INTERNAL_VAR(AlwaysShowThunks,          FALSE,  NULL,           dbg_itype_unsign
+ INTERNAL_VAR(AlsoDebugProcChild,        FALSE,  NULL,           dbg_itype_unsigned_int32)
+ 
+    /* automatic invocation on failure */
+-INTERNAL_VAR(ShowCrashDialog,           TRUE,   NULL,           dbg_itype_unsigned_int32)
++INTERNAL_VAR(ShowCrashDialog,           FALSE,   NULL,           dbg_itype_unsigned_int32)
+-- 
+2.52.0
+

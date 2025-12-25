@@ -1,7 +1,7 @@
 From 5353b5a5037cdd0245e034c776feb7f203f015ce Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Mon, 1 Dec 2025 12:31:21 +0100
-Subject: [PATCH 21/50] wined3d: Create / release the window DCs with the
+Subject: [PATCH 21/49] wined3d: Create / release the window DCs with the
  swapchains.
 
 Wine-Bug: http://bugs.winehq.org/show_bug.cgi?id=58491

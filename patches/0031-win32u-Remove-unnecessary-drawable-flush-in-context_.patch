@@ -1,7 +1,7 @@
 From 614e4598ded44e553ff7ba21b7ec84b2d7e770de Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Tue, 9 Dec 2025 11:05:10 +0100
-Subject: [PATCH 31/50] win32u: Remove unnecessary drawable flush in
+Subject: [PATCH 31/49] win32u: Remove unnecessary drawable flush in
  context_sync_drawables.
 
 This fixes sluggish rendering of Steam and other CEF based applications,

@@ -1,7 +1,7 @@
 From d3cf51973c65aef06c028e91c35ddc4255b7fc1d Mon Sep 17 00:00:00 2001
 From: Elizabeth Figura <zfigura@codeweavers.com>
 Date: Sun, 21 Dec 2025 19:41:47 -0600
-Subject: [PATCH 47/50] wined3d: Avoid some invalidation when render states are
+Subject: [PATCH 47/49] wined3d: Avoid some invalidation when render states are
  set redundantly.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59013

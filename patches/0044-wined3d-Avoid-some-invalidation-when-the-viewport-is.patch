@@ -1,7 +1,7 @@
 From 2004e8e7628935204f8bc16e42c410e811d8f7a6 Mon Sep 17 00:00:00 2001
 From: Elizabeth Figura <zfigura@codeweavers.com>
 Date: Fri, 19 Dec 2025 16:12:42 -0600
-Subject: [PATCH 44/50] wined3d: Avoid some invalidation when the viewport is
+Subject: [PATCH 44/49] wined3d: Avoid some invalidation when the viewport is
  set redundantly.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59013

@@ -1,7 +1,7 @@
 From 94105bee7726c85f0f0670a7c94f962cfad7a461 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Tue, 25 Jul 2023 10:38:35 +0200
-Subject: [PATCH 35/50] winex11: Use XFixes to hide cursor before warping it.
+Subject: [PATCH 35/49] winex11: Use XFixes to hide cursor before warping it.
 
 XWayland only allows warping the cursor if it is not visible. Fixes
 a regression from the periodic cursor sync removal.

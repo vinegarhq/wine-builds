@@ -1,7 +1,7 @@
 From 4946941205104e8c9239c999398fced94b811393 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Wed, 30 Nov 2022 18:46:00 +0100
-Subject: [PATCH 18/50] winex11: Support fixed X11 keycode to scancode
+Subject: [PATCH 18/49] winex11: Support fixed X11 keycode to scancode
  conversion.
 
 X11 keycodes are just Linux keycodes + 8 nowadays according to evdev or
