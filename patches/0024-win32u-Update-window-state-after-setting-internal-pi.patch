@@ -1,0 +1,31 @@
+From 2a2b28d6f8a0051dc6fa97d9df34bd4e5de40452 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
+Date: Fri, 12 Dec 2025 20:03:01 +0100
+Subject: [PATCH 24/48] win32u: Update window state after setting internal
+ pixel format.
+
+We need to inform wineserver that the window has a drawable now and
+should be clipped out of the window surface updates.
+
+Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=58491
+Signed-off-by: sewn <sewn@disroot.org>
+---
+ dlls/win32u/opengl.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/dlls/win32u/opengl.c b/dlls/win32u/opengl.c
+index 70744889d02..a2dc8e1be55 100644
+--- a/dlls/win32u/opengl.c
++++ b/dlls/win32u/opengl.c
+@@ -1580,6 +1580,8 @@ static BOOL win32u_wglSetPixelFormatWINE( HDC hdc, int format )
+         set_window_opengl_drawable( hwnd, drawable, TRUE );
+         set_dc_opengl_drawable( hdc, drawable );
+         opengl_drawable_release( drawable );
++
++        update_window_state( hwnd );
+     }
+ 
+     return TRUE;
+-- 
+2.52.0
+

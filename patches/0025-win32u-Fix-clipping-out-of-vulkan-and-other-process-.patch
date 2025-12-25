@@ -1,0 +1,142 @@
+From 535ef798c4519c6297cd14d923273352c641ffbc Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
+Date: Wed, 17 Dec 2025 12:09:44 +0100
+Subject: [PATCH 25/48] win32u: Fix clipping out of vulkan and other process
+ client surfaces.
+
+Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59132
+Signed-off-by: sewn <sewn@disroot.org>
+---
+ dlls/win32u/message.c        |  3 +++
+ dlls/win32u/ntuser_private.h |  1 +
+ dlls/win32u/opengl.c         |  4 ++--
+ dlls/win32u/vulkan.c         |  1 +
+ dlls/win32u/win32u_private.h |  2 +-
+ dlls/win32u/window.c         | 11 ++++++-----
+ include/ntuser.h             |  1 +
+ 7 files changed, 15 insertions(+), 8 deletions(-)
+
+diff --git a/dlls/win32u/message.c b/dlls/win32u/message.c
+index b28ce272099..58eeb046a94 100644
+--- a/dlls/win32u/message.c
++++ b/dlls/win32u/message.c
+@@ -2252,6 +2252,9 @@ static LRESULT handle_internal_message( HWND hwnd, UINT msg, WPARAM wparam, LPAR
+     case WM_WINE_UPDATEWINDOWSTATE:
+         update_window_state( hwnd );
+         return 0;
++    case WM_WINE_SETPIXELFORMAT:
++        set_window_pixel_format( hwnd, wparam, lparam );
++        return 0;
+     case WM_WINE_TRACKMOUSEEVENT:
+     {
+         TRACKMOUSEEVENT info;
+diff --git a/dlls/win32u/ntuser_private.h b/dlls/win32u/ntuser_private.h
+index 14dcff3ad38..a1fb649e79f 100644
+--- a/dlls/win32u/ntuser_private.h
++++ b/dlls/win32u/ntuser_private.h
+@@ -72,6 +72,7 @@ typedef struct tagWND
+     struct tagDIALOGINFO *dlgInfo;    /* Dialog additional info (dialogs only) */
+     int                swap_interval; /* OpenGL surface swap interval */
+     int                pixel_format;  /* Pixel format set by the graphics driver */
++    int                clip_clients;  /* Has client surfaces that needs to be clipped out */
+     int                cbWndExtra;    /* class cbWndExtra at window creation */
+     DWORD_PTR          userdata;      /* User private data */
+     DWORD              wExtra[1];     /* Window extra bytes */
+diff --git a/dlls/win32u/opengl.c b/dlls/win32u/opengl.c
+index a2dc8e1be55..40a8f6809a6 100644
+--- a/dlls/win32u/opengl.c
++++ b/dlls/win32u/opengl.c
+@@ -1518,7 +1518,7 @@ static BOOL win32u_wglSetPixelFormat( HDC hdc, int new_format, const PIXELFORMAT
+             opengl_drawable_release( drawable );
+         }
+ 
+-        return set_window_pixel_format( hwnd, new_format );
++        return set_window_pixel_format( hwnd, new_format, FALSE );
+     }
+ 
+     TRACE( "%p/%p format %d\n", hdc, hwnd, new_format );
+@@ -1581,7 +1581,7 @@ static BOOL win32u_wglSetPixelFormatWINE( HDC hdc, int format )
+         set_dc_opengl_drawable( hdc, drawable );
+         opengl_drawable_release( drawable );
+ 
+-        update_window_state( hwnd );
++        set_window_pixel_format( hwnd, format, TRUE );
+     }
+ 
+     return TRUE;
+diff --git a/dlls/win32u/vulkan.c b/dlls/win32u/vulkan.c
+index d0bcffcb458..1063afee187 100644
+--- a/dlls/win32u/vulkan.c
++++ b/dlls/win32u/vulkan.c
+@@ -1532,6 +1532,7 @@ static VkResult win32u_vkCreateWin32SurfaceKHR( VkInstance client_instance, cons
+         free( surface );
+         return res;
+     }
++    set_window_pixel_format( surface->hwnd, -1, TRUE );
+ 
+     vulkan_object_init( &surface->obj.obj, host_surface );
+     surface->obj.instance = instance;
+diff --git a/dlls/win32u/win32u_private.h b/dlls/win32u/win32u_private.h
+index 0b69ccd481d..3dbff57d2e5 100644
+--- a/dlls/win32u/win32u_private.h
++++ b/dlls/win32u/win32u_private.h
+@@ -275,7 +275,7 @@ extern BOOL is_window_enabled( HWND hwnd );
+ extern BOOL is_window_unicode( HWND hwnd );
+ extern BOOL is_window_visible( HWND hwnd );
+ extern BOOL is_zoomed( HWND hwnd );
+-extern BOOL set_window_pixel_format( HWND hwnd, int format );
++extern BOOL set_window_pixel_format( HWND hwnd, int format, BOOL internal );
+ extern int get_window_pixel_format( HWND hwnd );
+ extern DWORD get_window_long( HWND hwnd, INT offset );
+ extern ULONG_PTR get_window_long_ptr( HWND hwnd, INT offset, BOOL ansi );
+diff --git a/dlls/win32u/window.c b/dlls/win32u/window.c
+index 66d270fd3a2..ebd66cc8d29 100644
+--- a/dlls/win32u/window.c
++++ b/dlls/win32u/window.c
+@@ -1582,16 +1582,18 @@ LONG_PTR WINAPI NtUserSetWindowLongPtr( HWND hwnd, INT offset, LONG_PTR newval,
+     return set_window_long( hwnd, offset, sizeof(LONG_PTR), newval, ansi );
+ }
+ 
+-BOOL set_window_pixel_format( HWND hwnd, int format )
++BOOL set_window_pixel_format( HWND hwnd, int format, BOOL internal )
+ {
+     WND *win = get_win_ptr( hwnd );
+ 
+     if (!win || win == WND_DESKTOP || win == WND_OTHER_PROCESS)
+     {
+-        WARN( "setting format %d on win %p not supported\n", format, hwnd );
++        WARN( "setting format %d on win %p semi-stub!\n", format, hwnd );
++        NtUserPostMessage( hwnd, WM_WINE_SETPIXELFORMAT, format, internal );
+         return FALSE;
+     }
+-    win->pixel_format = format;
++    if (!internal) win->pixel_format = format;
++    if (format) win->clip_clients = TRUE;
+     release_win_ptr( win );
+ 
+     update_window_state( hwnd );
+@@ -2229,8 +2231,7 @@ static BOOL apply_window_pos( HWND hwnd, HWND insert_after, UINT swp_flags, stru
+         }
+         if (new_surface) req->paint_flags |= SET_WINPOS_PAINT_SURFACE;
+         if (is_layered) req->paint_flags |= SET_WINPOS_LAYERED_WINDOW;
+-        if (win->pixel_format || win->current_drawable)
+-            req->paint_flags |= SET_WINPOS_PIXEL_FORMAT;
++        if (win->clip_clients) req->paint_flags |= SET_WINPOS_PIXEL_FORMAT;
+ 
+         if ((ret = !wine_server_call( req )))
+         {
+diff --git a/include/ntuser.h b/include/ntuser.h
+index 78eee8f17d5..3beb6478f6f 100644
+--- a/include/ntuser.h
++++ b/include/ntuser.h
+@@ -649,6 +649,7 @@ enum wine_internal_message
+     WM_WINE_WINDOW_STATE_CHANGED,
+     WM_WINE_UPDATEWINDOWSTATE,
+     WM_WINE_TRACKMOUSEEVENT,
++    WM_WINE_SETPIXELFORMAT,
+     WM_WINE_FIRST_DRIVER_MSG = 0x80001000,  /* range of messages reserved for the USER driver */
+     WM_WINE_CLIPCURSOR = 0x80001ff0, /* internal driver notification messages */
+     WM_WINE_SETCURSOR,
+-- 
+2.52.0
+

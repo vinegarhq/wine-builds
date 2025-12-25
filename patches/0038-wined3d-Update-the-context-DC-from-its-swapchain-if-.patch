@@ -1,0 +1,38 @@
+From e3e409e741173f888eca2612ed5bae294336eb76 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
+Date: Thu, 18 Dec 2025 20:40:04 +0100
+Subject: [PATCH 38/48] wined3d: Update the context DC from its swapchain if it
+ changed.
+
+The context keeps a weak pointer to the swapchain, and the swapchain
+might be destroyed while are context still have a pointer to them.
+
+It's usually not causing issues because contexts will be refreshed with
+the new active swapchain before a present is executed. However, the new
+swapchain might be for the same window but might have a different DC.
+
+As we now borrow the DCs from the swapchains, we also need to check if
+the context DC needs to be updated.
+
+Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=58709
+---
+ dlls/wined3d/context_gl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/dlls/wined3d/context_gl.c b/dlls/wined3d/context_gl.c
+index 8aeb2284f44..89f6cfcd948 100644
+--- a/dlls/wined3d/context_gl.c
++++ b/dlls/wined3d/context_gl.c
+@@ -1295,7 +1295,8 @@ static void wined3d_context_gl_update_window(struct wined3d_context_gl *context_
+     if (!context_gl->c.swapchain)
+         return;
+ 
+-    if (context_gl->window == context_gl->c.swapchain->win_handle)
++    if (context_gl->window == context_gl->c.swapchain->win_handle &&
++        context_gl->dc == context_gl->c.swapchain->dc)
+         return;
+ 
+     TRACE("Updating context %p window from %p to %p.\n",
+-- 
+2.52.0
+
