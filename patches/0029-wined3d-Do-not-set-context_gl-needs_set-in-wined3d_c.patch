@@ -1,7 +1,7 @@
-From 03ed3342876c349b7ff4a1f58ec83d630034fc57 Mon Sep 17 00:00:00 2001
+From c295dde9f6772abbb825ced44afb33429e17c8b6 Mon Sep 17 00:00:00 2001
 From: Henri Verbeet <hverbeet@locutus.nl>
 Date: Sat, 6 Dec 2025 20:01:59 +0100
-Subject: [PATCH 29/49] wined3d: Do not set "context_gl->needs_set" in
+Subject: [PATCH 29/51] wined3d: Do not set "context_gl->needs_set" in
  wined3d_context_gl_release().
 
 Commit ce44dd0ba41b88f6b8eb626863c3358b75aca66c got rid of

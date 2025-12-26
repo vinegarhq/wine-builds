@@ -1,7 +1,7 @@
-From b5230051f56b2ba90b567f1944189acd4419efe0 Mon Sep 17 00:00:00 2001
+From 4a1567fd65d3bbffbfcde48f0292cbf644f342e4 Mon Sep 17 00:00:00 2001
 From: Elizabeth Figura <zfigura@codeweavers.com>
 Date: Fri, 19 Dec 2025 16:12:54 -0600
-Subject: [PATCH 45/49] wined3d: Avoid some invalidation when texture states
+Subject: [PATCH 45/51] wined3d: Avoid some invalidation when texture states
  are set redundantly.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59013

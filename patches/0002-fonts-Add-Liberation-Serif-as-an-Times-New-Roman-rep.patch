@@ -1,7 +1,7 @@
-From 60e4a3d6647757e8cb9f8b45899b098170e55c6b Mon Sep 17 00:00:00 2001
+From 5cb7af6116b2bdfa5c1a9b6053eac2becdd64e44 Mon Sep 17 00:00:00 2001
 From: Sebastian Lackner <sebastian@fds-team.de>
 Date: Thu, 3 Sep 2015 01:25:14 +0200
-Subject: [PATCH 02/49] fonts: Add Liberation Serif as an Times New Roman
+Subject: [PATCH 02/51] fonts: Add Liberation Serif as an Times New Roman
  replacement.
 
 Signed-off-by: sewn <sewn@disroot.org>

@@ -1,7 +1,7 @@
-From e04bdf8ffe69e8d932e7349a30283ba9a8a47f42 Mon Sep 17 00:00:00 2001
+From 37f562fea9e9ddb92638d835c9a203e7720f87c9 Mon Sep 17 00:00:00 2001
 From: sewn <sewn@disroot.org>
 Date: Mon, 13 Oct 2025 18:39:54 +0300
-Subject: [PATCH 37/49] Revert "winecfg: Allow configuring default MIDI
+Subject: [PATCH 37/51] Revert "winecfg: Allow configuring default MIDI
  device."
 
 This reverts commit ac85c06fc5955bea0cc55dca4d96270d4caf43b9.

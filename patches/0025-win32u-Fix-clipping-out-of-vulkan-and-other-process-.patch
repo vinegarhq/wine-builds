@@ -1,7 +1,7 @@
-From 4a054eb46f94b97f78e8a2408d6e01671685dcf4 Mon Sep 17 00:00:00 2001
+From 27482e860cba88421cece2ef21513c9dd7053adf Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Wed, 17 Dec 2025 12:09:44 +0100
-Subject: [PATCH 25/49] win32u: Fix clipping out of vulkan and other process
+Subject: [PATCH 25/51] win32u: Fix clipping out of vulkan and other process
  client surfaces.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59132

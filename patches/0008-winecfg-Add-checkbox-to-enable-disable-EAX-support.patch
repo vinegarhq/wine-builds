@@ -1,7 +1,7 @@
-From a3871bee2d1e0693c1309325b1f724a0fb3b41aa Mon Sep 17 00:00:00 2001
+From c53cd0545f6c629feb521dbe6561375d7e4b7859 Mon Sep 17 00:00:00 2001
 From: Mark Harmstone <mark@harmstone.com>
 Date: Sun, 5 Apr 2015 14:16:11 +0100
-Subject: [PATCH 08/49] winecfg: Add checkbox to enable/disable EAX support.
+Subject: [PATCH 08/51] winecfg: Add checkbox to enable/disable EAX support.
 
 Signed-off-by: sewn <sewn@disroot.org>
 ---
