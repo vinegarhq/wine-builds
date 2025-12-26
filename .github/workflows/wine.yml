@@ -11,8 +11,6 @@ jobs:
     steps:
     - name: Install dependencies
       run: |
-        echo "NAME=vinegarhq-wine-${{ env.WINE_VERSION }}" >> $GITHUB_ENV
-
         sudo wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.18/include/uapi/linux/ntsync.h
         sudo wget -O /usr/include/linux/userfaultfd.h https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.18/include/uapi/linux/userfaultfd.h
         
@@ -21,13 +19,15 @@ jobs:
 
     - name: Fetch sources
       run: |
+        echo "TAG=${{ env.WINE_VERSION }}+$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+        
         git clone https://gitlab.winehq.org/wine/wine.git --depth 1 \
           --branch wine-${{ env.WINE_VERSION }}
 
     - name: Apply patches
       run: |
-        echo "INSTALL=${{ github.workspace }}/${{ env.NAME }}" >> $GITHUB_ENV
-        
+        echo "INSTALL=${{ github.workspace }}/kombucha-${{ env.TAG }}" >> $GITHUB_ENV
+
         git -C wine apply "$GITHUB_WORKSPACE"/patches/*.patch
 
     - name: Install build dependencies
@@ -139,7 +139,9 @@ jobs:
         GH_TOKEN: ${{ github.token }}
         GH_REPO: ${{ github.repository }}
       run: |
-        cd $(dirname ${{ env.INSTALL }})
-        XZ_OPT=-9 tar -Jcf ${{ env.NAME }}.tar.xz $(basename ${{ env.INSTALL }})
-        tag="wine-${{ env.WINE_VERSION }}+$(git rev-parse --short ${{ github.sha }})"
-        gh release create --prerelease --generate-notes "$tag" "${{ env.NAME }}.tar.xz"
+        TARBALL="kombucha-${{ env.TAG }}.tar.xz"
+
+        cd "${{ env.INSTALL }}"/..
+        XZ_OPT=-9 tar -Jcf "$TARBALL" "${{ env.INSTALL }}"
+        
+        gh release create --prerelease --generate-notes "${{ env.TAG }}" "$TARBALL"
