@@ -166,6 +166,7 @@ jobs:
           --with-mingw=ccache x86_64-w64-mingw64-gcc \
           --disable-win16 \
           --disable-tests \
+          --disable-winemenubuilder \
           --with-alsa \
           --with-pulse \
           --with-dbus \
