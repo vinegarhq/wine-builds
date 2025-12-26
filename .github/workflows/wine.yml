@@ -142,6 +142,6 @@ jobs:
         TARBALL="kombucha-${{ env.TAG }}.tar.xz"
 
         cd "${{ env.INSTALL }}"/..
-        XZ_OPT=-9 tar -Jcf "$TARBALL" "$(dirname ${{ env.INSTALL }})"
+        XZ_OPT=-9 tar -Jcf "$TARBALL" "$(basename ${{ env.INSTALL }})"
         
         gh release create --prerelease --generate-notes "${{ env.TAG }}" "$TARBALL"
