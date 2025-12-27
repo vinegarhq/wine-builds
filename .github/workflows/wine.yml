@@ -47,6 +47,8 @@ jobs:
           libgl-dev \
           libgnutls28-dev \
           libpulse-dev \
+          libusb-1.0-0-dev \
+          libudev-dev \
           libsdl2-dev \
           libunwind-dev \
           libvulkan-dev \
@@ -99,8 +101,6 @@ jobs:
           --without-pcap \
           --without-pcsclite \
           --without-sane \
-          --without-udev \
-          --without-usb \
           --without-v4l2 \
           --without-xinerama \
           --without-xxf86vm \
@@ -113,6 +113,8 @@ jobs:
           --with-pthread \
           --with-pulse \
           --with-sdl \
+          --with-udev \
+          --with-usb \
           --with-unwind \
           --with-vulkan \
           --with-wayland \
