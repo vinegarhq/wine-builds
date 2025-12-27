@@ -1,7 +1,7 @@
-From 438d183d49685a8ddda9cc00effa141b8da5331a Mon Sep 17 00:00:00 2001
+From ce481788588439a2dcca9e823dc49e8daf869f8a Mon Sep 17 00:00:00 2001
 From: sewn <sewn@disroot.org>
 Date: Fri, 26 Dec 2025 17:11:53 +0300
-Subject: [PATCH 51/51] wine.inf: Disable winemenubuilder by default
+Subject: [PATCH 51/51] wine.inf: Disable unused services
 
 Signed-off-by: sewn <sewn@disroot.org>
 ---
