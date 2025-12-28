@@ -1,7 +1,7 @@
 From a4bc0421566220a81d267e1bdb7c80590d2f998d Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Wed, 17 Dec 2025 13:10:51 +0100
-Subject: [PATCH 26/51] win32u: Don't set window pixel format if drawable
+Subject: [PATCH 26/50] win32u: Don't set window pixel format if drawable
  creation failed.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=59132

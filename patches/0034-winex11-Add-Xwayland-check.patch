@@ -1,7 +1,7 @@
 From 4a1c73387b3c9b961be0be0a0bd09c20b9c7a1c2 Mon Sep 17 00:00:00 2001
 From: sewn <sewn@disroot.org>
 Date: Sun, 21 Dec 2025 16:55:13 +0300
-Subject: [PATCH 34/51] winex11: Add Xwayland check
+Subject: [PATCH 34/50] winex11: Add Xwayland check
 
 Signed-off-by: sewn <sewn@disroot.org>
 ---

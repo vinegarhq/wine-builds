@@ -1,7 +1,7 @@
 From dc27bb46babf98cd82af2d5421d3b8b32ad46e5d Mon Sep 17 00:00:00 2001
 From: Matteo Bruni <mbruni@codeweavers.com>
 Date: Wed, 17 Dec 2025 13:32:48 +0100
-Subject: [PATCH 48/51] wined3d/gl: Split UBOs to separate chunks.
+Subject: [PATCH 48/50] wined3d/gl: Split UBOs to separate chunks.
 
 It matters a lot on Nvidia proprietary drivers, where binding to
 GL_UNIFORM_BUFFER makes a very significant difference.

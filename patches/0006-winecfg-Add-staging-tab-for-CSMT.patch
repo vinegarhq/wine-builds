@@ -1,7 +1,7 @@
 From 8df290972bfd0358c84103f35ef2e51a1be91cef Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Michael=20M=C3=BCller?= <michael@fds-team.de>
 Date: Sun, 14 Dec 2014 20:42:45 +0100
-Subject: [PATCH 06/51] winecfg: Add staging tab for CSMT.
+Subject: [PATCH 06/50] winecfg: Add staging tab for CSMT.
 
 Signed-off-by: sewn <sewn@disroot.org>
 ---

@@ -1,7 +1,7 @@
 From ea9b98e79aa81d8ee2adcbc0cf1b328dae9235e7 Mon Sep 17 00:00:00 2001
 From: Matteo Bruni <mbruni@codeweavers.com>
 Date: Wed, 17 Dec 2025 14:21:43 +0100
-Subject: [PATCH 40/51] wined3d/gl: Only check GL context when accessing
+Subject: [PATCH 40/50] wined3d/gl: Only check GL context when accessing
  onscreen resources.
 
 Checking every time the GL context is acquired is a lot. We could do
