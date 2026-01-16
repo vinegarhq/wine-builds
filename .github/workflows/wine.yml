@@ -4,7 +4,7 @@ permissions:
   contents: write
   pull-requests: read
 env:
-  WINE_VERSION: "10.20"
+  WINE_VERSION: "11.0"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,14 +13,14 @@ jobs:
       run: |
         sudo wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.18/include/uapi/linux/ntsync.h
         sudo wget -O /usr/include/linux/userfaultfd.h https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.18/include/uapi/linux/userfaultfd.h
-        
+
     - name: Checkout Repository
       uses: actions/checkout@v3
 
     - name: Fetch sources
       run: |
         echo "TAG=${{ env.WINE_VERSION }}+$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
-        
+
         git clone https://gitlab.winehq.org/wine/wine.git --depth 1 \
           --branch wine-${{ env.WINE_VERSION }}
 
@@ -145,5 +145,5 @@ jobs:
 
         cd "${{ env.INSTALL }}"/..
         XZ_OPT=-9 tar -Jcf "$TARBALL" "$(basename ${{ env.INSTALL }})"
-        
+
         gh release create --prerelease --generate-notes "${{ env.TAG }}" "$TARBALL"
