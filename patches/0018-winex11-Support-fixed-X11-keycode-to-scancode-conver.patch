@@ -1,7 +1,7 @@
-From 53a2c92f17ab4056646a6b4983ae6d3ce523dd67 Mon Sep 17 00:00:00 2001
+From 27b8639b7efcee3b6f9274749ff35255c3ee46dd Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Wed, 30 Nov 2022 18:46:00 +0100
-Subject: [PATCH 18/50] winex11: Support fixed X11 keycode to scancode
+Subject: [PATCH 18/26] winex11: Support fixed X11 keycode to scancode
  conversion.
 
 X11 keycodes are just Linux keycodes + 8 nowadays according to evdev or
@@ -10,7 +10,6 @@ common case.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=30984
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=45605
-Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/winex11.drv/keyboard.c    | 44 ++++++++++++++++++++++++++++++++--
  dlls/winex11.drv/x11drv.h      |  1 +
@@ -18,7 +17,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  3 files changed, 47 insertions(+), 2 deletions(-)
 
 diff --git a/dlls/winex11.drv/keyboard.c b/dlls/winex11.drv/keyboard.c
-index 295ff88..3ecf6ac 100644
+index 295ff887eb9..3ecf6ac1b61 100644
 --- a/dlls/winex11.drv/keyboard.c
 +++ b/dlls/winex11.drv/keyboard.c
 @@ -64,6 +64,46 @@ static const unsigned int ControlMask = 1 << 2;
@@ -87,7 +86,7 @@ index 295ff88..3ecf6ac 100644
  	const char *ksname;
  	keysym = XkbKeycodeToKeysym( display, keyc, 0, 0 );
 diff --git a/dlls/winex11.drv/x11drv.h b/dlls/winex11.drv/x11drv.h
-index e0d6603..df51fb1 100644
+index e0d66038c5a..df51fb1dd39 100644
 --- a/dlls/winex11.drv/x11drv.h
 +++ b/dlls/winex11.drv/x11drv.h
 @@ -470,6 +470,7 @@ extern BOOL use_primary_selection;
@@ -99,7 +98,7 @@ index e0d6603..df51fb1 100644
  extern BOOL managed_mode;
  extern BOOL private_color_map;
 diff --git a/dlls/winex11.drv/x11drv_main.c b/dlls/winex11.drv/x11drv_main.c
-index 4b46941..fb1792d 100644
+index 4b46941b237..fb1792d8ca1 100644
 --- a/dlls/winex11.drv/x11drv_main.c
 +++ b/dlls/winex11.drv/x11drv_main.c
 @@ -74,6 +74,7 @@ BOOL use_primary_selection = FALSE;

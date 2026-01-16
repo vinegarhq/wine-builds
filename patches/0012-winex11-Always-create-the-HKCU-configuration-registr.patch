@@ -1,18 +1,17 @@
-From 2246cfa1a1e521dcb6a721bde74a216ea33e2fe3 Mon Sep 17 00:00:00 2001
+From 84a3b9894f91da7c74808eea6d2f0e7e17063265 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Fri, 6 Jan 2023 11:22:10 +0100
-Subject: [PATCH 12/50] winex11: Always create the HKCU configuration registry
+Subject: [PATCH 12/26] winex11: Always create the HKCU configuration registry
  key.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=30984
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=45605
-Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/winex11.drv/x11drv_main.c | 67 ++++++++++++++++++++++++++++++++--
  1 file changed, 64 insertions(+), 3 deletions(-)
 
 diff --git a/dlls/winex11.drv/x11drv_main.c b/dlls/winex11.drv/x11drv_main.c
-index 0b8eeda..5930ce6 100644
+index 0b8eedadd98..5930ce68100 100644
 --- a/dlls/winex11.drv/x11drv_main.c
 +++ b/dlls/winex11.drv/x11drv_main.c
 @@ -330,11 +330,61 @@ HKEY reg_open_key( HKEY root, const WCHAR *name, ULONG name_len )

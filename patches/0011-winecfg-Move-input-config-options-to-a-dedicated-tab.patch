@@ -1,11 +1,10 @@
-From 6e70241ba2d649370abeb71f1f0bcd503b450513 Mon Sep 17 00:00:00 2001
+From 4b64de347bceff4a28b531470f575f285de429e6 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Thu, 5 Jan 2023 21:16:38 +0100
-Subject: [PATCH 11/50] winecfg: Move input config options to a dedicated tab.
+Subject: [PATCH 11/26] winecfg: Move input config options to a dedicated tab.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=30984
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=45605
-Signed-off-by: sewn <sewn@disroot.org>
 ---
  MAINTAINERS                  |   1 +
  programs/winecfg/Makefile.in |   1 +
@@ -19,7 +18,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  create mode 100644 programs/winecfg/input.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index c34abce..f618a84 100644
+index a34642009f4..af9f493448a 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -194,6 +194,7 @@ F:	dlls/user32/input.c
@@ -31,7 +30,7 @@ index c34abce..f618a84 100644
  Input methods
  M:	Rémi Bernon <rbernon@codeweavers.com> @rbernon
 diff --git a/programs/winecfg/Makefile.in b/programs/winecfg/Makefile.in
-index 99c829a..1105a99 100644
+index 99c829a9468..1105a99e177 100644
 --- a/programs/winecfg/Makefile.in
 +++ b/programs/winecfg/Makefile.in
 @@ -9,6 +9,7 @@ SOURCES = \
@@ -44,7 +43,7 @@ index 99c829a..1105a99 100644
  	main.c \
 diff --git a/programs/winecfg/input.c b/programs/winecfg/input.c
 new file mode 100644
-index 0000000..115161b
+index 00000000000..115161b9040
 --- /dev/null
 +++ b/programs/winecfg/input.c
 @@ -0,0 +1,105 @@
@@ -154,7 +153,7 @@ index 0000000..115161b
 +    return FALSE;
 +}
 diff --git a/programs/winecfg/main.c b/programs/winecfg/main.c
-index afecfd6..b733b11 100644
+index afecfd664a9..b733b11be5e 100644
 --- a/programs/winecfg/main.c
 +++ b/programs/winecfg/main.c
 @@ -58,7 +58,7 @@ PropSheetCallback (HWND hWnd, UINT uMsg, LPARAM lParam)
@@ -184,7 +183,7 @@ index afecfd6..b733b11 100644
       * Fill out the (General) PROPSHEETPAGE data structure 
       * for the property sheet
 diff --git a/programs/winecfg/resource.h b/programs/winecfg/resource.h
-index df46dcd..8022bf4 100644
+index df46dcd03fe..8022bf4b30c 100644
 --- a/programs/winecfg/resource.h
 +++ b/programs/winecfg/resource.h
 @@ -46,6 +46,7 @@
@@ -219,7 +218,7 @@ index df46dcd..8022bf4 100644
 +/* input tab */
 +#define IDC_FULLSCREEN_GRAB             1501
 diff --git a/programs/winecfg/winecfg.h b/programs/winecfg/winecfg.h
-index d4fedff..b832344 100644
+index d4fedff5afb..b83234470c1 100644
 --- a/programs/winecfg/winecfg.h
 +++ b/programs/winecfg/winecfg.h
 @@ -74,6 +74,9 @@ WCHAR *keypath(const WCHAR *section);
@@ -241,7 +240,7 @@ index d4fedff..b832344 100644
  /* Windows version management */
  BOOL set_winver_from_string(const WCHAR *version);
 diff --git a/programs/winecfg/winecfg.rc b/programs/winecfg/winecfg.rc
-index 460000c..f993e5e 100644
+index 460000c6b87..f993e5eec89 100644
 --- a/programs/winecfg/winecfg.rc
 +++ b/programs/winecfg/winecfg.rc
 @@ -40,6 +40,7 @@ BEGIN
@@ -305,7 +304,7 @@ index 460000c..f993e5e 100644
  
  /* @makedep: winecfg.ico */
 diff --git a/programs/winecfg/x11drvdlg.c b/programs/winecfg/x11drvdlg.c
-index 9db8da5..bca9583 100644
+index 9db8da5a4f4..bca9583c7f6 100644
 --- a/programs/winecfg/x11drvdlg.c
 +++ b/programs/winecfg/x11drvdlg.c
 @@ -46,7 +46,7 @@ static const UINT dpi_values[] = { 96, 120, 144, 168, 192, 216, 240, 288, 336, 3

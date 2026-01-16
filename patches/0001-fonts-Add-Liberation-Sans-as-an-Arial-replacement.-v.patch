@@ -1,13 +1,11 @@
-From 978778a2c01a7cfe5ad6fd00ea54ed9836f1e011 Mon Sep 17 00:00:00 2001
+From 09f9776e7634da234bf0719fb39308c3a5d98857 Mon Sep 17 00:00:00 2001
 From: Torsten Kurbad <t.kurbad@iwm-kmrc.de>
 Date: Tue, 22 Jul 2014 18:11:41 -0600
-Subject: [PATCH 01/50] fonts: Add Liberation Sans as an Arial replacement.
+Subject: [PATCH 01/26] fonts: Add Liberation Sans as an Arial replacement.
  (v2)
 
 Changes in v2 by Sebastian Lackner <sebastian@fds-team.de>:
 * Update to Liberation Sans version 1.07.4
-
-Signed-off-by: sewn <sewn@disroot.org>
 ---
  fonts/Makefile.in |     1 +
  fonts/arial.sfd   | 86988 ++++++++++++++++++++++++++++++++++++++++++++
@@ -17,7 +15,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  create mode 100644 fonts/arial.ttf
 
 diff --git a/fonts/Makefile.in b/fonts/Makefile.in
-index a582d7b..ab80e7b 100644
+index a582d7be864..ab80e7b70f7 100644
 --- a/fonts/Makefile.in
 +++ b/fonts/Makefile.in
 @@ -1,4 +1,5 @@
@@ -28,7 +26,7 @@ index a582d7b..ab80e7b 100644
  	fixedsys_jp.sfd \
 diff --git a/fonts/arial.sfd b/fonts/arial.sfd
 new file mode 100644
-index 0000000..8a04e04
+index 00000000000..8a04e0486c2
 --- /dev/null
 +++ b/fonts/arial.sfd
 @@ -0,0 +1,86988 @@

@@ -1,12 +1,11 @@
-From 256e27b0915615d4eaf60e60a4f14686ebc17e86 Mon Sep 17 00:00:00 2001
+From 679650003b1d1c34c5dbc8b8cd8833f2c7a903b5 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?R=C3=A9mi=20Bernon?= <rbernon@codeweavers.com>
 Date: Fri, 6 Jan 2023 08:09:11 +0100
-Subject: [PATCH 15/50] winex11: Use the user configured keyboard layout if
+Subject: [PATCH 15/26] winex11: Use the user configured keyboard layout if
  any.
 
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=30984
 Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=45605
-Signed-off-by: sewn <sewn@disroot.org>
 ---
  dlls/winex11.drv/keyboard.c    | 33 +++++++++++++++++++++++++++------
  dlls/winex11.drv/x11drv.h      |  2 ++
@@ -14,7 +13,7 @@ Signed-off-by: sewn <sewn@disroot.org>
  3 files changed, 33 insertions(+), 6 deletions(-)
 
 diff --git a/dlls/winex11.drv/keyboard.c b/dlls/winex11.drv/keyboard.c
-index 5b0f275..67d1993 100644
+index 5b0f27536dd..67d19936095 100644
 --- a/dlls/winex11.drv/keyboard.c
 +++ b/dlls/winex11.drv/keyboard.c
 @@ -938,7 +938,6 @@ static const struct {
@@ -96,7 +95,7 @@ index 5b0f275..67d1993 100644
      syms = (keysyms_per_keycode > 4) ? 4 : keysyms_per_keycode;
  
 diff --git a/dlls/winex11.drv/x11drv.h b/dlls/winex11.drv/x11drv.h
-index ecba709..e0d6603 100644
+index ecba7099bbb..e0d66038c5a 100644
 --- a/dlls/winex11.drv/x11drv.h
 +++ b/dlls/winex11.drv/x11drv.h
 @@ -469,6 +469,7 @@ extern BOOL use_take_focus;
@@ -116,7 +115,7 @@ index ecba709..e0d6603 100644
  
  #define DEPTH_COUNT 3
 diff --git a/dlls/winex11.drv/x11drv_main.c b/dlls/winex11.drv/x11drv_main.c
-index 629f551..4b46941 100644
+index 629f55157ed..4b46941b237 100644
 --- a/dlls/winex11.drv/x11drv_main.c
 +++ b/dlls/winex11.drv/x11drv_main.c
 @@ -73,6 +73,7 @@ BOOL use_take_focus = TRUE;
